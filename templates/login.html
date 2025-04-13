@@ -435,20 +435,20 @@
       .card-content {
         padding: 2.5rem 1.5rem;
       }
-      
+
       .app-logo {
         width: 90px;
         height: 90px;
       }
-      
+
       .app-title {
         font-size: 2.5rem;
       }
-      
+
       .tagline {
         font-size: 1.3rem;
       }
-      
+
       .theme-toggle {
         top: 1rem;
         right: 1rem;
@@ -459,11 +459,11 @@
       .card-content {
         padding: 2rem 1.25rem;
       }
-      
+
       .app-title {
         font-size: 2.25rem;
       }
-      
+
       .form-options {
         flex-direction: column;
         align-items: flex-start;
@@ -598,8 +598,8 @@
 <body>
   <!-- Background decorations -->
   <div class="bg-decoration" id="lock-icon">🔒</div>
-  <div class="bg-decoration" id="shield-icon">🛡️</div>
-  
+  <div class="bg-decoration" id="shield-icon">🛡</div>
+
   <!-- Theme toggle -->
   <button class="theme-toggle" aria-label="Toggle between dark and light mode">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7069fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -642,7 +642,7 @@
             <label for="username" class="form-label">Username or Email</label>
             <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username or email" required>
           </div>
-          
+
           <div class="form-group" id="password-group">
             <label for="password" class="form-label">Password</label>
             <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
@@ -656,7 +656,7 @@
           </div>
           <a href="/forgot-password" class="forgot-password">Forgot password?</a>
         </div>
-        
+
         <button type="submit" class="login-button">Log In</button>
 
         <div class="divider"><span>Or continue with</span></div>
@@ -688,7 +688,7 @@
     // Theme toggle functionality
     const themeToggle = document.querySelector('.theme-toggle');
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     // Check for saved theme preference or use system preference
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme === 'light') {
@@ -704,14 +704,14 @@
       document.body.classList.add('light-mode');
       updateThemeIcon(true);
     }
-    
+
     // Toggle theme when button is clicked
     themeToggle.addEventListener('click', () => {
       const isLightMode = document.body.classList.toggle('light-mode');
       localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
       updateThemeIcon(isLightMode);
     });
-    
+
     function updateThemeIcon(isLightMode) {
       const themeIcon = themeToggle.querySelector('svg');
       if (isLightMode) {
