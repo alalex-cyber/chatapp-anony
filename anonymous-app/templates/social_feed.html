@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Feed | Campus Connect</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    :root {
+      --bg-gradient-dark: linear-gradient(to bottom right, #172554, #312e81, #4c1d95);
+      --bg-gradient-light: linear-gradient(to bottom right, #eff6ff, #e0e7ff, #f5f3ff);
+      --primary-dark: #172554;
+      --primary-light: #ffffff;
+      --blue-950: #172554;
+      --blue-900: #1e3a8a;
+      --blue-800: #1e40af;
+      --blue-700: #1d4ed8;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+      --blue-300: #93c5fd;
+      --blue-200: #bfdbfe;
+      --blue-100: #dbeafe;
+      --blue-50: #eff6ff;
+      --indigo-900: #312e81;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-100: #e0e7ff;
+      --green-500: #22c55e;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --green-300: #86efac;
+      --red-500: #ef4444;
+      --red-600: #dc2626;
+      --yellow-300: #fde047;
+      --yellow-400: #facc15;
+      --yellow-500: #eab308;
+      --yellow-600: #ca8a04;
+      --yellow-700: #a16207;
+      --yellow-800: #854d0e;
+      --orange-500: #f97316;
+      --purple-500: #a855f7;
+      --pink-500: #ec4899;
+      --teal-500: #14b8a6;
+      --border-dark: rgba(30, 64, 175, 0.3);
+      --border-light: #e5e7eb;
+      --white: #ffffff;
+      --text-dark: #ffffff;
+      --text-light: #172554;
+      --text-muted-dark: #93c5fd;
+      --text-muted-light: #1d4ed8;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-gradient-dark);
+      color: var(--text-dark);
+    }
+
+    body.light-mode {
+      background: var(--bg-gradient-light);
+      color: var(--text-light);
+    }
+
+    /* Main layout */
+    .flex {
+      display: flex;
+    }
+
+    .h-screen {
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      width: 16rem;
+      flex-direction: column;
+      background-color: rgba(23, 37, 84, 0.7);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid var(--border-dark);
+      display: none;
+      overflow-y: auto; /* Enable scrolling in sidebar */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+    }
+
+    /* Sidebar scrollbar styles */
+    .sidebar::-webkit-scrollbar {
+      width: 4px;
+      background-color: transparent;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background-color: rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar:hover::-webkit-scrollbar-thumb {
+      background-color: rgba(59, 130, 246, 0.5);
+    }
+
+    .light-mode .sidebar::-webkit-scrollbar-thumb {
+      background-color: rgba(37, 99, 235, 0.2);
+    }
+
+    .light-mode .sidebar:hover::-webkit-scrollbar-thumb {
+      background-color: rgba(37, 99, 235, 0.4);
+    }
+
+    .light-mode .sidebar {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-right: 1px solid var(--border-light);
+    }
+
+    @media (min-width: 768px) {
+      .sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar-content {
+      padding: 1rem;
+    }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      padding: 0.75rem 0.5rem;
+      background-color: rgba(79, 70, 229, 0.5);
+      border-radius: 0.75rem;
+    }
+
+    .light-mode .app-brand {
+      background-color: var(--indigo-100);
+    }
+
+    .brand-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 9999px;
+      background-color: var(--indigo-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .light-mode .brand-icon {
+      background-color: var(--indigo-500);
+    }
+
+    .brand-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .light-mode .brand-title {
+      color: var(--indigo-900);
+    }
+
+    .sidebar-section-title {
+      margin-bottom: 1.5rem;
+      color: var(--blue-400);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 0 0.5rem;
+    }
+
+    .light-mode .sidebar-section-title {
+      color: var(--blue-900);
+    }
+
+    .channel-list {
+      margin-bottom: 1.5rem;
+    }
+
+    .channel {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      color: rgba(147, 197, 253, 0.8);
+      margin-bottom: 0.25rem;
+    }
+
+    .light-mode .channel {
+      color: var(--blue-800);
+    }
+
+    .channel:hover {
+      background-color: rgba(30, 64, 175, 0.3);
+    }
+
+    .light-mode .channel:hover {
+      background-color: var(--blue-100);
+    }
+
+    .channel.active {
+      background-color: rgba(79, 70, 229, 0.8);
+      color: var(--white);
+    }
+
+    .light-mode .channel.active {
+      background-color: var(--indigo-500);
+      color: var(--white);
+    }
+
+    .channel-badge {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+    }
+
+    .light-mode .channel-badge {
+      background-color: rgba(37, 99, 235, 0.2);
+    }
+
+    .deadline-card {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      background-color: rgba(30, 64, 175, 0.3);
+    }
+
+    .light-mode .deadline-card {
+      background-color: rgba(219, 234, 254, 0.7);
+    }
+
+    .deadline-date {
+      font-size: 0.75rem;
+      color: var(--blue-300);
+      margin-bottom: 0.5rem;
+    }
+
+    .light-mode .deadline-date {
+      color: var(--blue-800);
+    }
+
+    .deadline-title {
+      color: var(--white);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .light-mode .deadline-title {
+      color: var(--blue-950);
+    }
+
+    .deadline-info {
+      font-size: 0.75rem;
+      color: var(--blue-300);
+    }
+
+    .light-mode .deadline-info {
+      color: var(--blue-700);
+    }
+
+    .dm-list {
+      margin-bottom: 1.5rem;
+    }
+
+    .dm-item {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      color: rgba(147, 197, 253, 0.8);
+    }
+
+    .light-mode .dm-item {
+      color: var(--blue-800);
+    }
+
+    .dm-item:hover {
+      background-color: rgba(30, 64, 175, 0.3);
+    }
+
+    .light-mode .dm-item:hover {
+      background-color: var(--blue-100);
+    }
+
+    .avatar {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 9999px;
+      position: relative;
+    }
+
+    .avatar.green {
+      background-color: var(--green-500);
+    }
+
+    .avatar.purple {
+      background-color: var(--indigo-500);
+    }
+
+    .status-indicator {
+      width: 0.625rem;
+      height: 0.625rem;
+      border-radius: 9999px;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      border: 2px solid var(--blue-950);
+    }
+
+    .status-indicator.online {
+      background-color: var(--green-300);
+    }
+
+    .status-indicator.offline {
+      background-color: #9ca3af;
+    }
+
+    .user-profile {
+      margin-top: auto;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      background-color: rgba(30, 64, 175, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .light-mode .user-profile {
+      background-color: var(--blue-100);
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .user-avatar {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      background-color: var(--indigo-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .light-mode .user-avatar {
+      background-color: var(--indigo-500);
+    }
+
+    .user-name {
+      font-weight: 500;
+      color: var(--white);
+    }
+
+    .light-mode .user-name {
+      color: var(--indigo-950);
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem;
+      background-color: rgba(23, 37, 84, 0.5);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .light-mode .header {
+      background-color: rgba(255, 255, 255, 0.7);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .light-mode .title {
+      color: var(--blue-950);
+    }
+
+    .subtitle {
+      color: var(--blue-300);
+      font-size: 0.875rem;
+    }
+
+    .light-mode .subtitle {
+      color: var(--blue-700);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .search-bar {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: rgba(30, 64, 175, 0.5);
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+    }
+
+    .light-mode .search-bar {
+      background-color: var(--blue-100);
+    }
+
+    @media (min-width: 768px) {
+      .search-bar {
+        display: flex;
+      }
+    }
+
+    .search-input {
+      background-color: transparent;
+      border: none;
+      outline: none;
+      width: 10rem;
+      font-size: 0.875rem;
+      color: var(--white);
+    }
+
+    .search-input::placeholder {
+      color: rgba(147, 197, 253, 0.7);
+    }
+
+    .light-mode .search-input {
+      color: var(--blue-950);
+    }
+
+    .light-mode .search-input::placeholder {
+      color: rgba(37, 99, 235, 0.7);
+    }
+
+    .icon-button {
+      width: 2.25rem;
+      height: 2.25rem;
+      background-color: rgba(30, 64, 175, 0.7);
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .icon-button:hover {
+      background-color: var(--blue-800);
+    }
+
+    .light-mode .icon-button {
+      background-color: var(--blue-100);
+    }
+
+    .light-mode .icon-button:hover {
+      background-color: var(--blue-200);
+    }
+
+    .notification-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: var(--red-500);
+      border-radius: 9999px;
+      position: absolute;
+      top: -0.125rem;
+      right: -0.125rem;
+    }
+
+    .create-button {
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.5rem;
+      background-color: var(--indigo-600);
+      color: var(--white);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .create-button:hover {
+      background-color: var(--indigo-700);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Main content area */
+    .content-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      /* For Firefox */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+    }
+
+    /* Modern scrollbar styles */
+    /* For Webkit browsers (Chrome, Safari, newer Edge) */
+    .content-container::-webkit-scrollbar {
+      width: 6px; /* Slim width */
+      background-color: transparent;
+    }
+
+    .content-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .content-container::-webkit-scrollbar-thumb {
+      background-color: rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Only show scrollbar when hovering over container */
+    .content-container:hover::-webkit-scrollbar-thumb {
+      opacity: 1;
+      background-color: rgba(59, 130, 246, 0.5);
+    }
+
+    /* Light mode scrollbar variants */
+    .light-mode .content-container::-webkit-scrollbar-thumb {
+      background-color: rgba(37, 99, 235, 0.2);
+    }
+
+    .light-mode .content-container:hover::-webkit-scrollbar-thumb {
+      background-color: rgba(37, 99, 235, 0.4);
+    }
+
+    /* Create Post Box */
+    .create-post-box {
+      background-color: rgba(30, 64, 175, 0.3);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-dark);
+    }
+
+    .light-mode .create-post-box {
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--border-light);
+    }
+
+    .create-post-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .create-post-avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 9999px;
+      background-color: var(--indigo-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .create-post-input {
+      background-color: rgba(30, 64, 175, 0.4);
+      border: 1px solid var(--border-dark);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      width: 100%;
+      color: var(--white);
+      font-size: 0.875rem;
+      resize: none;
+      outline: none;
+    }
+
+    .light-mode .create-post-input {
+      background-color: var(--white);
+      border: 1px solid var(--border-light);
+      color: var(--blue-900);
+    }
+
+    .create-post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .post-action-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .post-action-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      background-color: rgba(30, 64, 175, 0.4);
+      color: var(--blue-300);
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .light-mode .post-action-button {
+      background-color: var(--blue-50);
+      border: 1px solid var(--border-light);
+      color: var(--blue-600);
+    }
+
+    .post-action-button:hover {
+      background-color: rgba(30, 64, 175, 0.5);
+    }
+
+    .light-mode .post-action-button:hover {
+      background-color: var(--blue-100);
+    }
+
+    .post-button {
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      background-color: var(--indigo-600);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .post-button:hover {
+      background-color: var(--indigo-700);
+    }
+
+    /* Post Card */
+    .post-card {
+      background-color: rgba(30, 64, 175, 0.3);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-dark);
+    }
+
+    .light-mode .post-card {
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--border-light);
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+    }
+
+    .post-user {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .post-avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, var(--blue-500), var(--indigo-600));
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .post-user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-username {
+      font-weight: 600;
+      color: var(--white);
+      font-size: 0.9375rem;
+    }
+
+    .light-mode .post-username {
+      color: var(--blue-900);
+    }
+
+    .post-time {
+      font-size: 0.75rem;
+      color: var(--blue-300);
+    }
+
+    .light-mode .post-time {
+      color: var(--blue-600);
+    }
+
+    .post-more {
+      color: var(--blue-300);
+      cursor: pointer;
+    }
+
+    .light-mode .post-more {
+      color: var(--blue-600);
+    }
+
+    .post-content {
+      padding: 0 1rem 1rem;
+    }
+
+    .post-text {
+      color: var(--white);
+      margin-bottom: 1rem;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+
+    .light-mode .post-text {
+      color: var(--blue-900);
+    }
+
+    .post-image {
+      width: 100%;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      max-height: 400px;
+      object-fit: cover;
+    }
+
+    .post-stats {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      border-top: 1px solid var(--border-dark);
+      border-bottom: 1px solid var(--border-dark);
+      font-size: 0.75rem;
+      color: var(--blue-300);
+    }
+
+    .light-mode .post-stats {
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      color: var(--blue-600);
+    }
+
+    .post-likes {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .post-comments-count {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .post-actions {
+      display: flex;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .light-mode .post-actions {
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .post-action {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      color: var(--blue-300);
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .light-mode .post-action {
+      color: var(--blue-600);
+    }
+
+    .post-action:hover {
+      background-color: rgba(30, 64, 175, 0.4);
+    }
+
+    .light-mode .post-action:hover {
+      background-color: var(--blue-100);
+    }
+
+    .post-action.liked {
+      color: var(--red-500);
+    }
+
+    /* Comments Section */
+    .comments-section {
+      padding: 1rem;
+    }
+
+    .comment-input-container {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .comment-avatar {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      background-color: var(--indigo-600);
+      flex-shrink: 0;
+    }
+
+    .comment-input-wrapper {
+      flex: 1;
+      display: flex;
+      background-color: rgba(30, 64, 175, 0.4);
+      border: 1px solid var(--border-dark);
+      border-radius: 9999px;
+      padding: 0.25rem 0.75rem;
+    }
+
+    .light-mode .comment-input-wrapper {
+      background-color: var(--white);
+      border: 1px solid var(--border-light);
+    }
+
+    .comment-input {
+      flex: 1;
+      background-color: transparent;
+      border: none;
+      outline: none;
+      color: var(--white);
+      font-size: 0.875rem;
+      padding: 0.5rem 0;
+    }
+
+    .light-mode .comment-input {
+      color: var(--blue-900);
+    }
+
+    .comment-input::placeholder {
+      color: var(--blue-300);
+    }
+
+    .light-mode .comment-input::placeholder {
+      color: var(--blue-600);
+    }
+
+    .comment-submit {
+      background: none;
+      border: none;
+      color: var(--blue-400);
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0 0.5rem;
+    }
+
+    .light-mode .comment-submit {
+      color: var(--blue-600);
+    }
+
+    .comment-submit:hover {
+      color: var(--blue-300);
+    }
+
+    .light-mode .comment-submit:hover {
+      color: var(--blue-700);
+    }
+
+    .comment {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .comment-content {
+      flex: 1;
+      background-color: rgba(30, 64, 175, 0.4);
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+    }
+
+    .light-mode .comment-content {
+      background-color: var(--blue-50);
+    }
+
+    .comment-username {
+      font-weight: 600;
+      color: var(--white);
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .light-mode .comment-username {
+      color: var(--blue-900);
+    }
+
+    .comment-text {
+      color: var(--blue-200);
+      font-size: 0.875rem;
+    }
+
+    .light-mode .comment-text {
+      color: var(--blue-800);
+    }
+
+    .comment-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.375rem;
+      font-size: 0.75rem;
+      color: var(--blue-300);
+    }
+
+    .light-mode .comment-actions {
+      color: var(--blue-600);
+    }
+
+    .comment-action {
+      cursor: pointer;
+    }
+
+    .comment-action:hover {
+      text-decoration: underline;
+    }
+
+    .view-more-comments {
+      font-size: 0.875rem;
+      color: var(--blue-300);
+      padding: 0.5rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .light-mode .view-more-comments {
+      color: var(--blue-600);
+    }
+
+    .view-more-comments:hover {
+      text-decoration: underline;
+    }
+
+    /* Hide the Upcoming Deadlines section and all related elements */
+    .sidebar-section-title[style*="display: flex; justify-content: space-between"],
+    .sidebar-section-title:has(span:contains("Upcoming Deadlines")),
+    .sidebar-section-title:contains("UPCOMING DEADLINES"),
+    .deadline-card {
+      display: none !important;
+    }
+
+    /* Add spacing to compensate for the removed section */
+    .channel-list {
+      margin-bottom: 2.5rem !important;
+    }
+  </style>
+</head>
+<body>
+  <input type="checkbox" id="dark-mode-toggle" onchange="document.body.classList.toggle('light-mode')">
+
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-content">
+        <div class="app-brand">
+          <div class="brand-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <span class="brand-title">Campus Connect</span>
+        </div>
+
+        <div class="sidebar-section-title">Channels</div>
+
+        <div class="channel-list">
+          <div class="channel">
+            <span># General</span>
+            <span class="channel-badge">5</span>
+          </div>
+          <div class="channel active">
+            <span># Social Feed</span>
+          </div>
+        </div>
+
+        <!-- Upcoming Deadlines section completely removed -->
+
+        <div class="sidebar-section-title">Direct Messages</div>
+
+        <div class="dm-list">
+          <div class="dm-item">
+            <div class="avatar green">
+              <div class="status-indicator online"></div>
+            </div>
+            <span>Student Support</span>
+          </div>
+          <div class="dm-item">
+            <div class="avatar purple">
+              <div class="status-indicator offline"></div>
+            </div>
+            <span>Teaching Assistant</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="user-profile">
+        <div class="user">
+          <div class="user-avatar">
+            <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+              <div style="width: 4px; height: 4px; border-radius: 9999px; background-color: #bfdbfe; position: absolute; left: 10px; top: 10px;"></div>
+              <div style="width: 4px; height: 4px; border-radius: 9999px; background-color: #bfdbfe; position: absolute; right: 10px; top: 10px;"></div>
+              <div style="width: 6px; height: 2px; border-radius: 9999px; background-color: #bfdbfe; position: absolute; bottom: 10px;"></div>
+            </div>
+          </div>
+          <span class="user-name">Anonymous</span>
+        </div>
+        <svg id="settings-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-300 cursor-pointer">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="md:hidden text-white">
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="6" x2="20" y2="6"></line>
+            <line x1="4" y1="18" x2="20" y2="18"></line>
+          </svg>
+          <div>
+            <h1 class="title">Social Feed</h1>
+            <p class="subtitle">Share moments with your campus community</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="search-bar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-300">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <input type="text" placeholder="Search posts..." class="search-input">
+          </div>
+          <button id="dark-mode-button" class="icon-button">
+            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-300">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-700" style="display:none">
+              <path d="M12 3a6.364 6.364 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </button>
+          <div style="position: relative;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+            </svg>
+            <div class="notification-dot"></div>
+          </div>
+          <button class="create-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 12h6"></path>
+              <path d="M12 9v6"></path>
+              <path d="M10 2h4"></path>
+              <path d="M4.93 10H2a1 1 0 0 0-1 1v0a1 1 0 0 0 1 1h2.93"></path>
+              <path d="M22 10h-2.93"></path>
+              <path d="M22 14h-2.93"></path>
+              <path d="M4.93 14H2"></path>
+              <path d="M12 22v-2"></path>
+              <path d="M10 12a2 2 0 1 0 4 0 2 2 0 1 0-4 0"></path>
+            </svg>
+            Create Story
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Content Container -->
+      <div class="content-container">
+        <!-- Create Post Box -->
+        <div class="create-post-box">
+          <div class="create-post-header">
+            <div class="create-post-avatar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <textarea class="create-post-input" placeholder="What's on your mind?" rows="2"></textarea>
+          </div>
+          <div class="create-post-actions">
+            <div class="post-action-buttons">
+              <button class="post-action-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                  <circle cx="9" cy="9" r="2"></circle>
+                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                </svg>
+                Photo/Video
+              </button>
+              <button class="post-action-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                Location
+              </button>
+              <button class="post-action-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
+                  <path d="M20 2a10 10 0 0 1 0 20 1 1 0 0 1-1-1"></path>
+                  <path d="M12 14a1 1 0 0 0 0-2"></path>
+                </svg>
+                Poll
+              </button>
+            </div>
+            <button class="post-button">Post</button>
+          </div>
+        </div>
+
+        <!-- Posts -->
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-user">
+              <div class="post-avatar">JS</div>
+              <div class="post-user-info">
+                <div class="post-username">Jane Smith</div>
+                <div class="post-time">2 hours ago</div>
+              </div>
+            </div>
+            <div class="post-more">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </div>
+          </div>
+          <div class="post-content">
+            <p class="post-text">Just finished my final project for Computer Science! This semester was challenging but so rewarding. Celebrating with coffee and donuts! 🍩 #ComputerScience #FinalProject</p>
+            <img src="https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="Laptop with code on screen and coffee" class="post-image">
+          </div>
+          <div class="post-stats">
+            <div class="post-likes">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              42 likes
+            </div>
+            <div class="post-comments-count">
+              8 comments
+            </div>
+          </div>
+          <div class="post-actions">
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              Like
+            </button>
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Comment
+            </button>
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+              </svg>
+              Share
+            </button>
+          </div>
+          <div class="comments-section">
+            <div class="comment-input-container">
+              <div class="comment-avatar"></div>
+              <div class="comment-input-wrapper">
+                <input type="text" class="comment-input" placeholder="Write a comment...">
+                <button class="comment-submit">Post</button>
+              </div>
+            </div>
+            <div class="comment">
+              <div class="comment-avatar" style="background: linear-gradient(135deg, #4338ca, #6366f1);">
+                <span style="color: white; font-size: 0.75rem; font-weight: 600;">MK</span>
+              </div>
+              <div class="comment-content">
+                <div class="comment-username">Michael K.</div>
+                <div class="comment-text">Congrats on finishing! Those donuts look amazing. What was your project about?</div>
+                <div class="comment-actions">
+                  <span class="comment-action">Like</span>
+                  <span class="comment-action">Reply</span>
+                  <span class="comment-time">45m</span>
+                </div>
+              </div>
+            </div>
+            <div class="comment">
+              <div class="comment-avatar" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);">
+                <span style="color: white; font-size: 0.75rem; font-weight: 600;">AR</span>
+              </div>
+              <div class="comment-content">
+                <div class="comment-username">Alex R.</div>
+                <div class="comment-text">Way to go! I'm still working on mine 😭 Any tips for the final section?</div>
+                <div class="comment-actions">
+                  <span class="comment-action">Like</span>
+                  <span class="comment-action">Reply</span>
+                  <span class="comment-time">30m</span>
+                </div>
+              </div>
+            </div>
+            <div class="view-more-comments">
+              View more comments
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-user">
+              <div class="post-avatar" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);">TW</div>
+              <div class="post-user-info">
+                <div class="post-username">Tom Wilson</div>
+                <div class="post-time">5 hours ago</div>
+              </div>
+            </div>
+            <div class="post-more">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </div>
+          </div>
+          <div class="post-content">
+            <p class="post-text">Library study session vibes. Perfect weather outside but deadlines wait for no one. 📚 Who else is cramming for finals this week?</p>
+            <img src="https://images.unsplash.com/photo-1529154166788-324c5022894e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="University library with students studying" class="post-image">
+          </div>
+          <div class="post-stats">
+            <div class="post-likes">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              38 likes
+            </div>
+            <div class="post-comments-count">
+              12 comments
+            </div>
+          </div>
+          <div class="post-actions">
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              Like
+            </button>
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Comment
+            </button>
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+              </svg>
+              Share
+            </button>
+          </div>
+          <div class="comments-section">
+            <div class="comment-input-container">
+              <div class="comment-avatar"></div>
+              <div class="comment-input-wrapper">
+                <input type="text" class="comment-input" placeholder="Write a comment...">
+                <button class="comment-submit">Post</button>
+              </div>
+            </div>
+            <div class="comment">
+              <div class="comment-avatar" style="background: linear-gradient(135deg, #ec4899, #f472b6);">
+                <span style="color: white; font-size: 0.75rem; font-weight: 600;">SL</span>
+              </div>
+              <div class="comment-content">
+                <div class="comment-username">Sarah L.</div>
+                <div class="comment-text">I feel this! Been at the library since 8am. Coffee is the only thing keeping me going 😅</div>
+                <div class="comment-actions">
+                  <span class="comment-action">Like</span>
+                  <span class="comment-action">Reply</span>
+                  <span class="comment-time">2h</span>
+                </div>
+              </div>
+            </div>
+            <div class="comment">
+              <div class="comment-avatar" style="background: linear-gradient(135deg, #22c55e, #4ade80);">
+                <span style="color: white; font-size: 0.75rem; font-weight: 600;">JT</span>
+              </div>
+              <div class="comment-content">
+                <div class="comment-username">Jordan T.</div>
+                <div class="comment-text">I'm right there with you! Third floor by the windows has the best spots.</div>
+                <div class="comment-actions">
+                  <span class="comment-action">Like</span>
+                  <span class="comment-action">Reply</span>
+                  <span class="comment-time">1h</span>
+                </div>
+              </div>
+            </div>
+            <div class="view-more-comments">
+              View more comments
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-user">
+              <div class="post-avatar" style="background: linear-gradient(135deg, #ec4899, #f472b6);">EG</div>
+              <div class="post-user-info">
+                <div class="post-username">Emma Garcia</div>
+                <div class="post-time">Yesterday at 4:32 PM</div>
+              </div>
+            </div>
+            <div class="post-more">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </div>
+          </div>
+          <div class="post-content">
+            <p class="post-text">Spring festival was amazing! Thanks to everyone who helped organize and volunteered. Can't wait for next year! 🎉 #CampusLife</p>
+            <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="Campus festival with students celebrating" class="post-image">
+          </div>
+          <div class="post-stats">
+            <div class="post-likes">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              124 likes
+            </div>
+            <div class="post-comments-count">
+              27 comments
+            </div>
+          </div>
+          <div class="post-actions">
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              Like
+            </button>
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Comment
+            </button>
+            <button class="post-action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+              </svg>
+              Share
+            </button>
+          </div>
+          <div class="comments-section">
+            <div class="comment-input-container">
+              <div class="comment-avatar"></div>
+              <div class="comment-input-wrapper">
+                <input type="text" class="comment-input" placeholder="Write a comment...">
+                <button class="comment-submit">Post</button>
+              </div>
+            </div>
+            <div class="view-more-comments">
+              View comments (27)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle dark/light mode
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeButton = document.getElementById('dark-mode-button');
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
+
+    darkModeButton.addEventListener('click', () => {
+      darkModeToggle.checked = !darkModeToggle.checked;
+      if (darkModeToggle.checked) {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+    });
+
+    // Mobile menu toggle
+    const mobileMenuToggle = document.querySelector('.header-title svg');
+    const sidebar = document.querySelector('.sidebar');
+
+    mobileMenuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('mobile-visible');
+    });
+
+    // Like functionality
+    const likeButtons = document.querySelectorAll('.post-action:first-child');
+    likeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        button.classList.toggle('liked');
+
+        // Get the SVG element
+        const svg = button.querySelector('svg');
+
+        if (button.classList.contains('liked')) {
+          button.style.color = '#ef4444'; // Red color for liked state
+          svg.setAttribute('fill', 'currentColor');
+        } else {
+          button.style.color = ''; // Reset to default color
+          svg.setAttribute('fill', 'none');
+        }
+      });
+    });
+
+    // Add navigation functionality to channel items
+    const channelItems = document.querySelectorAll('.channel');
+    channelItems.forEach(channel => {
+      channel.addEventListener('click', () => {
+        const channelText = channel.textContent.trim();
+        if (channelText.includes('General')) {
+          window.location.href = '/chat';
+        } else if (channelText.includes('Social Feed')) {
+          window.location.href = '/social-feed';
+        }
+      });
+    });
+    const settingsIcon = document.getElementById('settings-icon');
+    if (settingsIcon) {
+      settingsIcon.addEventListener('click', () => {
+        window.location.href = '/settings';
+      });
+    }
+  </script>
+</body>
+</html>

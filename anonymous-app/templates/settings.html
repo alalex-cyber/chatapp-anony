@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anonymous Settings | Campus Connect</title>
+  <style>
+    /* Reset and base styles - same as existing templates */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    :root {
+      --bg-gradient-dark: linear-gradient(to bottom right, #172554, #312e81, #4c1d95);
+      --bg-gradient-light: linear-gradient(to bottom right, #eff6ff, #e0e7ff, #f5f3ff);
+      --primary-dark: #172554;
+      --primary-light: #ffffff;
+      --blue-950: #172554;
+      --blue-900: #1e3a8a;
+      --blue-800: #1e40af;
+      --blue-700: #1d4ed8;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+      --blue-300: #93c5fd;
+      --blue-200: #bfdbfe;
+      --blue-100: #dbeafe;
+      --blue-50: #eff6ff;
+      --indigo-900: #312e81;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-100: #e0e7ff;
+      --green-500: #22c55e;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --green-300: #86efac;
+      --red-500: #ef4444;
+      --red-600: #dc2626;
+      --yellow-300: #fde047;
+      --yellow-400: #facc15;
+      --yellow-500: #eab308;
+      --yellow-600: #ca8a04;
+      --yellow-700: #a16207;
+      --yellow-800: #854d0e;
+      --orange-500: #f97316;
+      --purple-500: #a855f7;
+      --pink-500: #ec4899;
+      --teal-500: #14b8a6;
+      --border-dark: rgba(30, 64, 175, 0.3);
+      --border-light: #e5e7eb;
+      --white: #ffffff;
+      --text-dark: #ffffff;
+      --text-light: #172554;
+      --text-muted-dark: #93c5fd;
+      --text-muted-light: #1d4ed8;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-gradient-dark);
+      color: var(--text-dark);
+    }
+
+    body.light-mode {
+      background: var(--bg-gradient-light);
+      color: var(--text-light);
+    }
+
+    /* Main layout */
+    .flex {
+      display: flex;
+    }
+
+    .h-screen {
+      height: 100vh;
+    }
+
+    /* Sidebar styles - same as existing templates */
+    .sidebar {
+      display: flex;
+      width: 16rem;
+      flex-direction: column;
+      background-color: rgba(23, 37, 84, 0.7);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid var(--border-dark);
+      display: none;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+    }
+
+    .light-mode .sidebar {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-right: 1px solid var(--border-light);
+    }
+
+    @media (min-width: 768px) {
+      .sidebar {
+        display: flex;
+      }
+    }
+
+    /* Sidebar content styles - abbreviated for brevity */
+    .sidebar-content {
+      padding: 1rem;
+    }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      padding: 0.75rem 0.5rem;
+      background-color: rgba(79, 70, 229, 0.5);
+      border-radius: 0.75rem;
+    }
+
+    .light-mode .app-brand {
+      background-color: var(--indigo-100);
+    }
+
+    .brand-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 9999px;
+      background-color: var(--indigo-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .light-mode .brand-icon {
+      background-color: var(--indigo-500);
+    }
+
+    .brand-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .light-mode .brand-title {
+      color: var(--indigo-900);
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem;
+      background-color: rgba(23, 37, 84, 0.5);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .light-mode .header {
+      background-color: rgba(255, 255, 255, 0.7);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .light-mode .title {
+      color: var(--blue-950);
+    }
+
+    .subtitle {
+      color: var(--blue-300);
+      font-size: 0.875rem;
+    }
+
+    .light-mode .subtitle {
+      color: var(--blue-700);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .icon-button {
+      width: 2.25rem;
+      height: 2.25rem;
+      background-color: rgba(30, 64, 175, 0.7);
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .icon-button:hover {
+      background-color: var(--blue-800);
+    }
+
+    .light-mode .icon-button {
+      background-color: var(--blue-100);
+    }
+
+    .light-mode .icon-button:hover {
+      background-color: var(--blue-200);
+    }
+
+    /* Settings specific styles */
+    .settings-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+    }
+
+    .settings-container::-webkit-scrollbar {
+      width: 6px;
+      background-color: transparent;
+    }
+
+    .settings-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .settings-container::-webkit-scrollbar-thumb {
+      background-color: rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .settings-container:hover::-webkit-scrollbar-thumb {
+      opacity: 1;
+      background-color: rgba(59, 130, 246, 0.5);
+    }
+
+    .light-mode .settings-container::-webkit-scrollbar-thumb {
+      background-color: rgba(37, 99, 235, 0.2);
+    }
+
+    .light-mode .settings-container:hover::-webkit-scrollbar-thumb {
+      background-color: rgba(37, 99, 235, 0.4);
+    }
+
+    .settings-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .settings-section {
+      background-color: rgba(30, 64, 175, 0.3);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-dark);
+    }
+
+    .light-mode .settings-section {
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--border-light);
+    }
+
+    .settings-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .light-mode .settings-header {
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .settings-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      background-color: rgba(79, 70, 229, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .light-mode .settings-icon {
+      background-color: var(--indigo-100);
+    }
+
+    .settings-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .light-mode .settings-title {
+      color: var(--blue-900);
+    }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(30, 64, 175, 0.2);
+    }
+
+    .light-mode .settings-row {
+      border-bottom: 1px solid rgba(219, 234, 254, 0.5);
+    }
+
+    .settings-row:last-child {
+      border-bottom: none;
+    }
+
+    .settings-label {
+      font-size: 0.9375rem;
+      color: var(--blue-200);
+    }
+
+    .light-mode .settings-label {
+      color: var(--blue-800);
+    }
+
+    .settings-description {
+      font-size: 0.75rem;
+      color: var(--blue-300);
+      margin-top: 0.25rem;
+    }
+
+    .light-mode .settings-description {
+      color: var(--blue-600);
+    }
+
+    .settings-control {
+      display: flex;
+      align-items: center;
+    }
+
+    /* Switch toggle */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 3rem;
+      height: 1.5rem;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(30, 64, 175, 0.3);
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .light-mode .slider {
+      background-color: var(--blue-200);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 1.125rem;
+      width: 1.125rem;
+      left: 0.188rem;
+      bottom: 0.188rem;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--indigo-600);
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px var(--indigo-600);
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(1.5rem);
+      -ms-transform: translateX(1.5rem);
+      transform: translateX(1.5rem);
+    }
+
+    /* Select styles */
+    .settings-select {
+      background-color: rgba(30, 64, 175, 0.3);
+      border: 1px solid var(--border-dark);
+      border-radius: 0.375rem;
+      padding: 0.5rem;
+      color: var(--white);
+      font-size: 0.875rem;
+      min-width: 10rem;
+      outline: none;
+    }
+
+    .light-mode .settings-select {
+      background-color: var(--white);
+      border: 1px solid var(--border-light);
+      color: var(--blue-900);
+    }
+
+    .settings-select option {
+      background-color: var(--blue-950);
+      color: var(--white);
+    }
+
+    .light-mode .settings-select option {
+      background-color: var(--white);
+      color: var(--blue-900);
+    }
+
+    /* Avatar selector styles */
+    .avatar-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .avatar-option {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .avatar-option:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .avatar-option.selected {
+      border: 2px solid var(--indigo-500);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+    }
+
+    .avatar-blue {
+      background: linear-gradient(to bottom right, #60a5fa, #2563eb);
+    }
+
+    .avatar-pink {
+      background: linear-gradient(to bottom right, #f472b6, #db2777);
+    }
+
+    .avatar-yellow {
+      background: linear-gradient(to bottom right, #facc15, #ca8a04);
+    }
+
+    .avatar-green {
+      background: linear-gradient(to bottom right, #4ade80, #16a34a);
+    }
+
+    .avatar-purple {
+      background: linear-gradient(to bottom right, #a855f7, #7e22ce);
+    }
+
+    .avatar-orange {
+      background: linear-gradient(to bottom right, #fb923c, #ea580c);
+    }
+
+    .avatar-teal {
+      background: linear-gradient(to bottom right, #2dd4bf, #0d9488);
+    }
+
+    .avatar-red {
+      background: linear-gradient(to bottom right, #f87171, #dc2626);
+    }
+
+    .avatar-face {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 9999px;
+      position: absolute;
+    }
+
+    .avatar-face.blue {
+      background-color: var(--blue-800);
+    }
+
+    .avatar-face.pink {
+      background-color: #be185d;
+    }
+
+    .avatar-face.yellow {
+      background-color: var(--yellow-800);
+    }
+
+    .avatar-face.green {
+      background-color: var(--green-700);
+    }
+
+    .avatar-face.purple {
+      background-color: #6b21a8;
+    }
+
+    .avatar-face.orange {
+      background-color: #c2410c;
+    }
+
+    .avatar-face.teal {
+      background-color: #0f766e;
+    }
+
+    .avatar-face.red {
+      background-color: #b91c1c;
+    }
+
+    .avatar-dot {
+      width: 0.375rem;
+      height: 0.375rem;
+      border-radius: 9999px;
+      position: absolute;
+    }
+
+    .avatar-dot.left {
+      left: 0.5rem;
+      top: 0.5rem;
+    }
+
+    .avatar-dot.right {
+      right: 0.5rem;
+      top: 0.5rem;
+    }
+
+    .avatar-dot.blue {
+      background-color: var(--blue-300);
+    }
+
+    .avatar-dot.pink {
+      background-color: #fbcfe8;
+    }
+
+    .avatar-dot.yellow {
+      background-color: var(--yellow-300);
+    }
+
+    .avatar-dot.green {
+      background-color: var(--green-300);
+    }
+
+    .avatar-dot.purple {
+      background-color: #e9d5ff;
+    }
+
+    .avatar-dot.orange {
+      background-color: #fed7aa;
+    }
+
+    .avatar-dot.teal {
+      background-color: #99f6e4;
+    }
+
+    .avatar-dot.red {
+      background-color: #fecaca;
+    }
+
+    .avatar-mouth {
+      width: 0.5rem;
+      height: 0.125rem;
+      border-radius: 9999px;
+      position: absolute;
+      bottom: 0.5rem;
+      transform: translateX(0.125rem);
+    }
+
+    .avatar-mouth.blue {
+      background-color: var(--blue-300);
+    }
+
+    .avatar-mouth.pink {
+      background-color: #fbcfe8;
+    }
+
+    .avatar-mouth.yellow {
+      background-color: var(--yellow-300);
+    }
+
+    .avatar-mouth.green {
+      background-color: var(--green-300);
+    }
+
+    .avatar-mouth.purple {
+      background-color: #e9d5ff;
+    }
+
+    .avatar-mouth.orange {
+      background-color: #fed7aa;
+    }
+
+    .avatar-mouth.teal {
+      background-color: #99f6e4;
+    }
+
+    .avatar-mouth.red {
+      background-color: #fecaca;
+    }
+
+    /* Button styles */
+    .button {
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      border: none;
+    }
+
+    .button-primary {
+      background-color: var(--indigo-600);
+      color: var(--white);
+    }
+
+    .button-primary:hover {
+      background-color: var(--indigo-700);
+    }
+
+    .button-secondary {
+      background-color: rgba(30, 64, 175, 0.3);
+      color: var(--blue-300);
+      border: 1px solid var(--border-dark);
+    }
+
+    .light-mode .button-secondary {
+      background-color: var(--blue-50);
+      color: var(--blue-700);
+      border: 1px solid var(--border-light);
+    }
+
+    .button-secondary:hover {
+      background-color: rgba(30, 64, 175, 0.4);
+    }
+
+    .light-mode .button-secondary:hover {
+      background-color: var(--blue-100);
+    }
+
+    .button-danger {
+      background-color: var(--red-500);
+      color: var(--white);
+    }
+
+    .button-danger:hover {
+      background-color: var(--red-600);
+    }
+
+    .settings-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .text-danger {
+      color: var(--red-500);
+    }
+
+    /* Range slider styles */
+    .range-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 0.5rem;
+      border-radius: 0.25rem;
+      background: rgba(30, 64, 175, 0.3);
+      outline: none;
+    }
+
+    .light-mode .range-slider {
+      background: var(--blue-200);
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background: var(--indigo-600);
+      cursor: pointer;
+    }
+
+    .range-slider::-moz-range-thumb {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background: var(--indigo-600);
+      cursor: pointer;
+      border: none;
+    }
+
+    .range-value {
+      margin-left: 0.75rem;
+      min-width: 2rem;
+      text-align: center;
+      color: var(--blue-300);
+      font-size: 0.875rem;
+    }
+
+    .light-mode .range-value {
+      color: var(--blue-700);
+    }
+
+    .range-container {
+      display: flex;
+      align-items: center;
+      width: 12rem;
+    }
+
+    .color-options {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .color-option {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-option:hover {
+      transform: scale(1.1);
+    }
+
+    .color-option.selected {
+      border: 2px solid var(--white);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .color-blue {
+      background-color: var(--blue-600);
+    }
+
+    .color-purple {
+      background-color: var(--purple-500);
+    }
+
+    .color-pink {
+      background-color: var(--pink-500);
+    }
+
+    .color-teal {
+      background-color: var(--teal-500);
+    }
+
+    .color-green {
+      background-color: var(--green-500);
+    }
+
+    .color-orange {
+      background-color: var(--orange-500);
+    }
+  </style>
+</head>
+<body>
+  <input type="checkbox" id="dark-mode-toggle" onchange="document.body.classList.toggle('light-mode')">
+
+  <div class="flex h-screen">
+    <!-- Main Content -->
+    <div class="main-content" style="width: 100%;">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-title">
+          <div>
+            <h1 class="title">Settings</h1>
+            <p class="subtitle">Customize your anonymous experience</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="dark-mode-button" class="icon-button">
+            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-300">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-700" style="display:none">
+              <path d="M12 3a6.364 6.364 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </button>
+          <button id="back-button" class="button button-secondary">
+            Back to Chat
+          </button>
+        </div>
+      </div>
+
+      <!-- Settings Content -->
+      <div class="settings-container">
+        <div class="settings-wrapper">
+          <!-- Appearance Section -->
+          <div class="settings-section">
+            <div class="settings-header">
+              <div class="settings-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <line x1="21.17" x2="12" y1="8" y2="8"></line>
+                  <line x1="3.95" x2="8.54" y1="6.06" y2="14"></line>
+                  <line x1="10.88" x2="15.46" y1="21.94" y2="14"></line>
+                </svg>
+              </div>
+              <div class="settings-title">Appearance</div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Avatar</div>
+                <div class="settings-description">Choose your anonymous profile picture</div>
+              </div>
+              <div class="settings-control">
+                <div class="avatar-options">
+                  <div class="avatar-option avatar-blue selected">
+                    <div class="avatar-face blue">
+                      <div class="avatar-dot blue left"></div>
+                      <div class="avatar-dot blue right"></div>
+                      <div class="avatar-mouth blue"></div>
+                    </div>
+                  </div>
+                  <div class="avatar-option avatar-pink">
+                    <div class="avatar-face pink">
+                      <div class="avatar-dot pink left"></div>
+                      <div class="avatar-dot pink right"></div>
+                      <div class="avatar-mouth pink"></div>
+                    </div>
+                  </div>
+                  <div class="avatar-option avatar-yellow">
+                    <div class="avatar-face yellow">
+                      <div class="avatar-dot yellow left"></div>
+                      <div class="avatar-dot yellow right"></div>
+                      <div class="avatar-mouth yellow"></div>
+                    </div>
+                  </div>
+                  <div class="avatar-option avatar-green">
+                    <div class="avatar-face green">
+                      <div class="avatar-dot green left"></div>
+                      <div class="avatar-dot green right"></div>
+                      <div class="avatar-mouth green"></div>
+                    </div>
+                  </div>
+                  <div class="avatar-option avatar-purple">
+                    <div class="avatar-face purple">
+                      <div class="avatar-dot purple left"></div>
+                      <div class="avatar-dot purple right"></div>
+                      <div class="avatar-mouth purple"></div>
+                    </div>
+                  </div>
+                  <div class="avatar-option avatar-orange">
+                    <div class="avatar-face orange">
+                      <div class="avatar-dot orange left"></div>
+                      <div class="avatar-dot orange right"></div>
+                      <div class="avatar-mouth orange"></div>
+                    </div>
+                  </div>
+                  <div class="avatar-option avatar-teal">
+                    <div class="avatar-face teal">
+                      <div class="avatar-dot teal left"></div>
+                      <div class="avatar-dot teal right"></div>
+                      <div class="avatar-mouth teal"></div>
+                    </div>
+                  </div>
+                  <div class="avatar-option avatar-red">
+                    <div class="avatar-face red">
+                      <div class="avatar-dot red left"></div>
+                      <div class="avatar-dot red right"></div>
+                      <div class="avatar-mouth red"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Theme</div>
+                <div class="settings-description">Choose light or dark mode</div>
+              </div>
+              <div class="settings-control">
+                <select class="settings-select" id="theme-select">
+                  <option value="dark">Dark Mode</option>
+                  <option value="light">Light Mode</option>
+                  <option value="system">System Default</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Accent Color</div>
+                <div class="settings-description">Choose your preferred accent color</div>
+              </div>
+              <div class="settings-control">
+                <div class="color-options">
+                  <div class="color-option color-blue selected"></div>
+                  <div class="color-option color-purple"></div>
+                  <div class="color-option color-pink"></div>
+                  <div class="color-option color-teal"></div>
+                  <div class="color-option color-green"></div>
+                  <div class="color-option color-orange"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Chat Bubble Style</div>
+                <div class="settings-description">Choose your preferred message bubble style</div>
+              </div>
+              <div class="settings-control">
+                <select class="settings-select">
+                  <option value="modern">Modern (Default)</option>
+                  <option value="classic">Classic</option>
+                  <option value="compact">Compact</option>
+                  <option value="minimal">Minimal</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Font Size</div>
+                <div class="settings-description">Adjust the text size</div>
+              </div>
+              <div class="settings-control">
+                <div class="range-container">
+                  <input type="range" min="12" max="20" value="16" class="range-slider" id="font-size-slider">
+                  <div class="range-value">16px</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Privacy Section -->
+          <div class="settings-section">
+            <div class="settings-header">
+              <div class="settings-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
+                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                  <path d="M12 3v18"></path>
+                  <path d="M3 12h18"></path>
+                </svg>
+              </div>
+              <div class="settings-title">Privacy & Security</div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Online Status</div>
+                <div class="settings-description">Show when you're active in the chat</div>
+              </div>
+              <div class="settings-control">
+                <select class="settings-select">
+                  <option value="online">Online</option>
+                  <option value="away">Away</option>
+                  <option value="invisible">Invisible</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Direct Message Privacy</div>
+                <div class="settings-description">Control who can send you direct messages</div>
+              </div>
+              <div class="settings-control">
+                <select class="settings-select">
+                  <option value="everyone">Everyone</option>
+                  <option value="classmates">Classmates Only</option>
+                  <option value="nobody">Nobody</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Read Receipts</div>
+                <div class="settings-description">Let others know when you've read their messages</div>
+              </div>
+              <div class="settings-control">
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Typing Indicators</div>
+                <div class="settings-description">Show when you're typing a message</div>
+              </div>
+              <div class="settings-control">
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Message Retention</div>
+                <div class="settings-description">How long to keep your chat history</div>
+              </div>
+              <div class="settings-control">
+                <select class="settings-select">
+                  <option value="forever">Forever</option>
+                  <option value="1month">1 Month</option>
+                  <option value="1week">1 Week</option>
+                  <option value="24hours">24 Hours</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Clear Chat History</div>
+                <div class="settings-description">Delete all your messages and chat history</div>
+              </div>
+              <div class="settings-control">
+                <button class="button button-danger">Clear History</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications Section -->
+          <div class="settings-section">
+            <div class="settings-header">
+              <div class="settings-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                </svg>
+              </div>
+              <div class="settings-title">Notifications</div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Enable Notifications</div>
+                <div class="settings-description">Receive alerts for new messages and mentions</div>
+              </div>
+              <div class="settings-control">
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Sound Alerts</div>
+                <div class="settings-description">Play sounds for new messages</div>
+              </div>
+              <div class="settings-control">
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">General Channel Notifications</div>
+                <div class="settings-description">How to be notified about General channel</div>
+              </div>
+              <div class="settings-control">
+                <select class="settings-select">
+                  <option value="all">All Messages</option>
+                  <option value="mentions">Only Mentions</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Social Feed Notifications</div>
+                <div class="settings-description">How to be notified about Social Feed</div>
+              </div>
+              <div class="settings-control">
+                <select class="settings-select">
+                  <option value="all">All Messages</option>
+                  <option value="mentions">Only Mentions</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Direct Message Notifications</div>
+                <div class="settings-description">How to be notified about DMs</div>
+              </div>
+              <div class="settings-control">
+                <select class="settings-select">
+                  <option value="all">All Messages</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Section -->
+          <div class="settings-section">
+            <div class="settings-header">
+              <div class="settings-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <div class="settings-title">Account</div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Change Password</div>
+                <div class="settings-description">Update your login credentials</div>
+              </div>
+              <div class="settings-control">
+                <button class="button button-secondary">Change Password</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Two-Factor Authentication</div>
+                <div class="settings-description">Add an extra layer of security</div>
+              </div>
+              <div class="settings-control">
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Active Sessions</div>
+                <div class="settings-description">Manage devices where you're logged in</div>
+              </div>
+              <div class="settings-control">
+                <button class="button button-secondary">View Sessions</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Reset Identity</div>
+                <div class="settings-description" style="color: var(--red-500);">Generate a new anonymous identity (cannot be undone)</div>
+              </div>
+              <div class="settings-control">
+                <button class="button button-danger">Reset Identity</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Delete Account</div>
+                <div class="settings-description" style="color: var(--red-500);">Permanently delete your account and all data</div>
+              </div>
+              <div class="settings-control">
+                <button class="button button-danger">Delete Account</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save Buttons -->
+          <div class="settings-buttons">
+            <button class="button button-secondary">Cancel</button>
+            <button class="button button-primary">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle dark/light mode
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeButton = document.getElementById('dark-mode-button');
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
+    const themeSelect = document.getElementById('theme-select');
+
+    darkModeButton.addEventListener('click', () => {
+      darkModeToggle.checked = !darkModeToggle.checked;
+      if (darkModeToggle.checked) {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        themeSelect.value = 'light';
+      } else {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        themeSelect.value = 'dark';
+      }
+    });
+
+    themeSelect.addEventListener('change', () => {
+      if (themeSelect.value === 'light') {
+        darkModeToggle.checked = true;
+        document.body.classList.add('light-mode');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else if (themeSelect.value === 'dark') {
+        darkModeToggle.checked = false;
+        document.body.classList.remove('light-mode');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+      // System option would need additional logic to detect system preference
+    });
+
+    // Font size slider
+    const fontSizeSlider = document.getElementById('font-size-slider');
+    const fontSizeValue = document.querySelector('.range-value');
+
+    fontSizeSlider.addEventListener('input', () => {
+      const size = fontSizeSlider.value;
+      fontSizeValue.textContent = `${size}px`;
+      document.documentElement.style.setProperty('--base-font-size', `${size}px`);
+    });
+
+    // Avatar selection
+    const avatarOptions = document.querySelectorAll('.avatar-option');
+
+    avatarOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        // Remove selected class from all options
+        avatarOptions.forEach(opt => opt.classList.remove('selected'));
+        // Add selected class to clicked option
+        option.classList.add('selected');
+      });
+    });
+
+    // Color theme selection
+    const colorOptions = document.querySelectorAll('.color-option');
+
+    colorOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        // Remove selected class from all options
+        colorOptions.forEach(opt => opt.classList.remove('selected'));
+        // Add selected class to clicked option
+        option.classList.add('selected');
+      });
+    });
+
+    // Back button
+    const backButton = document.getElementById('back-button');
+    backButton.addEventListener('click', () => {
+      window.location.href = '/chat';
+    });
+  </script>
+</body>
+</html>
