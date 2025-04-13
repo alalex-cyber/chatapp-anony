@@ -234,14 +234,72 @@
     /* Additional options */
     .form-options {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 2rem;
+      width: 100%;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .remember-me input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: rgba(16, 23, 37, 0.5);
+      cursor: pointer;
+      position: relative;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: all 0.2s ease;
+    }
+
+    .remember-me input[type="checkbox"]:checked {
+      background-color: var(--primary-blue);
+      border-color: var(--primary-blue);
+    }
+
+    .remember-me input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      color: white;
+      font-size: 12px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .remember-me input[type="checkbox"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(112, 105, 250, 0.2);
+    }
+
+    .remember-me label {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Light mode styles for remember me */
+    body.light-mode .remember-me input[type="checkbox"] {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    body.light-mode .remember-me label {
+      color: #334155;
     }
 
     .forgot-password {
       color: var(--text-highlight);
       text-decoration: none;
-      font-size: 1rem;
+      font-size: 0.95rem;
       transition: all 0.2s ease;
     }
 
@@ -412,6 +470,129 @@
         gap: 0.75rem;
       }
     }
+
+    /* Social buttons styles */
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 2rem 0;
+      color: var(--text-muted);
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .divider span {
+      padding: 0 1rem;
+      font-size: 0.9rem;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+
+    .social-button {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      background-color: rgba(26, 33, 49, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-light);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .social-button svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--text-light);
+    }
+
+    .social-button:hover {
+      transform: translateY(-2px);
+      background-color: rgba(39, 49, 73, 0.8);
+      box-shadow: 0 4px 15px rgba(112, 105, 250, 0.2);
+    }
+
+    .social-button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(112, 105, 250, 0.2);
+    }
+
+    /* Light mode social button styles */
+    body.light-mode .social-button {
+      background-color: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    body.light-mode .social-button svg {
+      stroke: #334155;
+    }
+
+    body.light-mode .social-button:hover {
+      background-color: #e2e8f0;
+    }
+
+    body.light-mode .divider {
+      color: #64748b;
+    }
+
+    body.light-mode .divider::before,
+    body.light-mode .divider::after {
+      border-bottom-color: #e2e8f0;
+    }
+
+    /* Signup section styles */
+    .signup-section {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .signup-text {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .signup-link {
+      color: var(--text-highlight);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .signup-link:hover {
+      color: var(--primary-blue);
+      text-decoration: underline;
+    }
+
+    body.light-mode .signup-text {
+      color: #64748b;
+    }
+
+    body.light-mode .signup-link {
+      color: #475569;
+    }
+
+    body.light-mode .signup-link:hover {
+      color: var(--primary-blue);
+    }
   </style>
 </head>
 <body>
@@ -467,16 +648,42 @@
             <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
           </div>
         </div>
-        
+
         <div class="form-options">
+          <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember">Remember me</label>
+          </div>
           <a href="/forgot-password" class="forgot-password">Forgot password?</a>
         </div>
         
         <button type="submit" class="login-button">Log In</button>
+
+        <div class="divider"><span>Or continue with</span></div>
+
+        <div class="social-buttons">
+          <button type="button" class="social-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v8M8 12h8"/>
+            </svg>
+            Google
+          </button>
+          <button type="button" class="social-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+            Facebook
+          </button>
+        </div>
+
+        <div class="signup-section">
+          <p class="signup-text">Don't have an account? <a href="/register" class="signup-link">Sign up</a></p>
+        </div>
       </form>
     </div>
   </div>
-
+  
   <script>
     // Theme toggle functionality
     const themeToggle = document.querySelector('.theme-toggle');
