@@ -307,6 +307,8 @@
       color: var(--blue-800);
     }
 
+    .light-mode .register-button:hover{color: var(--blue-800)}
+
     .theme-toggle {
       position: absolute;
       top: 1.5rem;
@@ -513,31 +515,10 @@
         <form id="register-form" action="/register" method="post">
           <!-- Personal Info -->
           <div class="form-group">
-            <label for="email" class="form-label">Email Address</label>
-            <input type="email" id="email" name="email" placeholder="university@example.com" class="form-input" required>
+            <label for="email" class="form-label">Student ID</label>
+            <input type="email" id="email" name="email" placeholder="Enter your Student ID" class="form-input" required>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="username" class="form-label">Username</label>
-              <input type="text" id="username" name="username" placeholder="Anonymous username" class="form-input" required>
-            </div>
-
-            <div class="form-group">
-              <label for="department" class="form-label">Department</label>
-              <select id="department" name="department" class="form-select" required>
-                <option value="" disabled selected>Select department</option>
-                <option value="computer_science">Computer Science</option>
-                <option value="engineering">Engineering</option>
-                <option value="business">Business</option>
-                <option value="arts">Arts &amp; Humanities</option>
-                <option value="science">Science</option>
-                <option value="medicine">Medicine</option>
-                <option value="law">Law</option>
-                <option value="social_science">Social Sciences</option>
-              </select>
-            </div>
-          </div>
 
           <div class="form-row">
             <div class="form-group">
@@ -551,18 +532,7 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="year" class="form-label">Year of Study</label>
-            <select id="year" name="year" class="form-select" required>
-              <option value="" disabled selected>Select year</option>
-              <option value="1">1st Year</option>
-              <option value="2">2nd Year</option>
-              <option value="3">3rd Year</option>
-              <option value="4">4th Year</option>
-              <option value="5">5th Year</option>
-              <option value="graduate">Graduate Student</option>
-            </select>
-          </div>
+
 
           <!-- Avatar Selection -->
           <div class="form-group">
