@@ -1637,6 +1637,35 @@
       top: 0.5rem;
     }
 
+    .user {
+      position: relative;
+    }
+
+    .user::after {
+      content: "View Profile";
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(30, 64, 175, 0.9);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .light-mode .user::after {
+      background-color: var(--blue-600);
+    }
+
+    .user:hover::after {
+      opacity: 1;
+    }
+
     .avatar-dot.
   </style>
 </head>
@@ -1690,7 +1719,7 @@
       </div>
 
       <div class="user-profile">
-        <div class="user">
+        <div class="user" id="profile-link" style="cursor: pointer;">
           <div class="user-avatar">
             <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
               <div style="width: 4px; height: 4px; border-radius: 9999px; background-color: #bfdbfe; position: absolute; left: 10px; top: 10px;"></div>
@@ -2272,6 +2301,13 @@ mobileMenuToggle.addEventListener('click', () => {
     leaveButton.addEventListener('click', () => {
       window.location.href = '/logout';
     });
+    // Profile link functionality
+    const profileLink = document.getElementById('profile-link');
+    if (profileLink) {
+      profileLink.addEventListener('click', () => {
+        window.location.href = '/profile';
+      });
+    }
   </script>
 </body>
 </html>
