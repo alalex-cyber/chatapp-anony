@@ -127,5 +127,24 @@ def profile():
     return render_template('user_profile.html', user=user_data)
 
 
+# Add this route to your run.py file
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+
+        # In a real application, you would:
+        # 1. Check if email exists in your database
+        # 2. Generate a secure reset token
+        # 3. Store the token with an expiration time
+        # 4. Send an email with a reset link
+
+        # For demo purposes, we'll just flash a message
+        flash('Password reset instructions sent to your email.')
+        return redirect(url_for('login'))
+
+    return render_template('forgot_password.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
