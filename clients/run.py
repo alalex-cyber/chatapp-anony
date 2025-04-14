@@ -127,8 +127,6 @@ def profile():
     return render_template('user_profile.html', user=user_data)
 
 
-# Add this route to your run.py file
-
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
@@ -145,6 +143,5 @@ def forgot_password():
         return redirect(url_for('login'))
 
     return render_template('forgot_password.html')
-
 if __name__ == '__main__':
     app.run(debug=True)
