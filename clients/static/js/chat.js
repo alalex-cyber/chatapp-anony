@@ -364,3 +364,430 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+/**
+ * Message Synchronization Module
+ * Handles message delivery reliability and recovery from network issues
+ */
+class MessageSyncManager {
+    constructor(socket) {
+        this.socket = socket;
+        this.pendingMessages = [];
+        this.sentMessages = new Map(); // Map of message ID to message data
+        this.lastReceivedTimestamp = null;
+        this.isOnline = navigator.onLine;
+        
+        // Load pending messages from local storage if any
+        this.loadFromStorage();
+        
+        // Set up event listeners
+        this.setupEventListeners();
+    }
+    
+    setupEventListeners() {
+        // Listen for online/offline events
+        window.addEventListener('online', () => this.handleOnline());
+        window.addEventListener('offline', () => this.handleOffline());
+        
+        // Listen for socket reconnect events
+        this.socket.on('connect', () => this.handleReconnect());
+        
+        // Listen for acknowledgements
+        this.socket.on('message_ack', data => this.handleMessageAck(data));
+    }
+    
+    /**
+     * Queue a message to be sent
+     * @param {Object} messageData The message data to send
+     * @returns {string} A temporary ID for the message
+     */
+    queueMessage(messageData) {
+        // Generate a temporary ID for the message
+        const tempId = 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        // Add to pending messages
+        const pendingMessage = {
+            id: tempId,
+            data: messageData,
+            attempts: 0,
+            timestamp: Date.now()
+        };
+        
+        this.pendingMessages.push(pendingMessage);
+        this.saveToStorage();
+        
+        // Try to send immediately if we're online
+        if (this.isOnline && this.socket.connected) {
+            this.sendPendingMessages();
+        }
+        
+        return tempId;
+    }
+    
+    /**
+     * Attempt to send all pending messages
+     */
+    sendPendingMessages() {
+        if (!this.isOnline || !this.socket.connected || this.pendingMessages.length === 0) {
+            return;
+        }
+        
+        // Make a copy of the pending messages array since we'll be modifying it
+        const messagesToSend = [...this.pendingMessages];
+        
+        for (const message of messagesToSend) {
+            this.sendMessage(message);
+        }
+    }
+    
+    /**
+     * Send an individual message
+     * @param {Object} message The message object to send
+     */
+    sendMessage(message) {
+        // Don't exceed max retry attempts
+        if (message.attempts >= 5) {
+            console.error(`Failed to send message after ${message.attempts} attempts`, message);
+            // Remove from pending queue
+            this.removePendingMessage(message.id);
+            
+            // Notify user
+            this.notifyError(message);
+            return;
+        }
+        
+        // Increment attempt counter
+        message.attempts++;
+        this.saveToStorage();
+        
+        // Send the message
+        this.socket.emit('send_message', message.data, (response) => {
+            if (response && response.error) {
+                console.error('Error sending message:', response.error);
+                // Will retry on next reconnect
+            } else if (response && response.status === 'success') {
+                // Message sent successfully
+                this.handleMessageSent(message, response);
+            }
+        });
+    }
+    
+    /**
+     * Handle successful message sending
+     * @param {Object} pendingMessage The pending message that was sent
+     * @param {Object} response The server response
+     */
+    handleMessageSent(pendingMessage, response) {
+        // Remove from pending queue
+        this.removePendingMessage(pendingMessage.id);
+        
+        // Map temporary ID to real ID
+        if (response.message_id) {
+            // Store in sent messages map
+            this.sentMessages.set(response.message_id, {
+                tempId: pendingMessage.id,
+                data: pendingMessage.data,
+                timestamp: pendingMessage.timestamp
+            });
+            
+            // Clean up old sent messages (keep last 100)
+            if (this.sentMessages.size > 100) {
+                // Get keys sorted by timestamp
+                const sortedKeys = Array.from(this.sentMessages.entries())
+                    .sort((a, b) => a[1].timestamp - b[1].timestamp)
+                    .map(entry => entry[0]);
+                
+                // Remove oldest
+                this.sentMessages.delete(sortedKeys[0]);
+            }
+        }
+    }
+    
+    /**
+     * Handle message acknowledgement from server
+     * @param {Object} data Message acknowledgement data
+     */
+    handleMessageAck(data) {
+        if (data.message_id && this.sentMessages.has(data.message_id)) {
+            // Message was successfully received and processed
+            this.sentMessages.delete(data.message_id);
+        }
+    }
+    
+    /**
+     * Remove a message from the pending queue
+     * @param {string} messageId The ID of the message to remove
+     */
+    removePendingMessage(messageId) {
+        const index = this.pendingMessages.findIndex(m => m.id === messageId);
+        if (index !== -1) {
+            this.pendingMessages.splice(index, 1);
+            this.saveToStorage();
+        }
+    }
+    
+    /**
+     * Handle going online
+     */
+    handleOnline() {
+        console.log('Device is online, attempting to send pending messages');
+        this.isOnline = true;
+        this.sendPendingMessages();
+    }
+    
+    /**
+     * Handle going offline
+     */
+    handleOffline() {
+        console.log('Device is offline, messages will be queued');
+        this.isOnline = false;
+    }
+    
+    /**
+     * Handle socket reconnection
+     */
+    handleReconnect() {
+        console.log('Socket reconnected, syncing messages');
+        
+        // Send any pending messages
+        this.sendPendingMessages();
+        
+        // Request any missed messages
+        if (this.lastReceivedTimestamp) {
+            this.socket.emit('sync_messages', {
+                channel_id: window.currentChannel,
+                since: this.lastReceivedTimestamp
+            });
+        }
+    }
+    
+    /**
+     * Update the last received timestamp when a new message comes in
+     * @param {string} timestamp ISO timestamp of the last received message
+     */
+    updateLastReceived(timestamp) {
+        if (timestamp) {
+            const date = new Date(timestamp);
+            if (!isNaN(date.getTime())) {
+                this.lastReceivedTimestamp = timestamp;
+                localStorage.setItem('lastMessageTimestamp', timestamp);
+            }
+        }
+    }
+    
+    /**
+     * Save pending messages to local storage
+     */
+    saveToStorage() {
+        try {
+            localStorage.setItem('pendingMessages', JSON.stringify(this.pendingMessages));
+        } catch (e) {
+            console.error('Failed to save pending messages to storage', e);
+        }
+    }
+    
+    /**
+     * Load pending messages from local storage
+     */
+    loadFromStorage() {
+        try {
+            // Load pending messages
+            const pendingData = localStorage.getItem('pendingMessages');
+            if (pendingData) {
+                this.pendingMessages = JSON.parse(pendingData);
+            }
+            
+            // Load last received timestamp
+            const lastTimestamp = localStorage.getItem('lastMessageTimestamp');
+            if (lastTimestamp) {
+                this.lastReceivedTimestamp = lastTimestamp;
+            }
+        } catch (e) {
+            console.error('Failed to load messages from storage', e);
+            this.pendingMessages = [];
+        }
+    }
+    
+    /**
+     * Notify user of error sending message
+     * @param {Object} message The message that failed to send
+     */
+    notifyError(message) {
+        // Find the temporary message element
+        const tempElement = document.querySelector(`.message[data-temp-id="${message.id}"]`);
+        if (tempElement) {
+            tempElement.classList.add('message-error');
+            
+            // Add retry button
+            const retryButton = document.createElement('button');
+            retryButton.className = 'message-retry-button';
+            retryButton.textContent = 'Retry';
+            retryButton.addEventListener('click', () => {
+                tempElement.classList.remove('message-error');
+                retryButton.remove();
+                
+                // Reset attempts and try again
+                message.attempts = 0;
+                this.pendingMessages.push(message);
+                this.saveToStorage();
+                this.sendMessage(message);
+            });
+            
+            tempElement.querySelector('.message-content').appendChild(retryButton);
+        }
+    }
+}
+
+// Integration with main chat.js
+
+// After initializing socket connection:
+let syncManager;
+
+function setupSocketConnection() {
+    console.log("Initializing Socket.IO connection");
+    
+    // Use single socket instance
+    socket = io({
+        reconnection: true,
+        reconnectionAttempts: MAX_RECONNECT_ATTEMPTS,
+        reconnectionDelay: RECONNECT_DELAY,
+        timeout: 10000
+    });
+    
+    // Initialize the sync manager after socket is created
+    syncManager = new MessageSyncManager(socket);
+    
+    // Connection events
+    socket.on('connect', handleSocketConnect);
+    // ... other event handlers
+}
+
+// Update the handleNewMessage function to track the last received timestamp
+function handleNewMessage(message) {
+    console.log('Received new message:', message);
+    
+    // Update the last received timestamp for sync
+    if (message.timestamp) {
+        syncManager.updateLastReceived(message.timestamp);
+    }
+    
+    // Only show message if it's for the current channel
+    if (message.channel_id === currentChannel) {
+        // Check if we need a new date divider
+        const messageDate = new Date(message.timestamp).toLocaleDateString();
+        checkAndAddDateDivider(messageDate);
+        
+        // Add the message
+        const messageElement = createMessageElement(message);
+        messagesContainer.appendChild(messageElement);
+        scrollToBottom();
+    } else {
+        // Update unread count for other channels
+        updateUnreadCount(message.channel_id);
+    }
+}
+
+// Update sendMessage to use the sync manager
+function sendMessage(content, channelId) {
+    if (!content.trim()) {
+        console.log('Attempting to send empty message, ignoring');
+        return;
+    }
+    
+    const channel = channelId || currentChannel;
+    console.log(`Sending message: "${content}" to channel ${channel}`);
+    
+    const messageData = {
+        content: content,
+        channel_id: channel
+    };
+    
+    // Create and display a temporary message
+    const tempMessageId = syncManager.queueMessage(messageData);
+    
+    // Create a temporary visual representation of the message
+    const currentUser = {
+        alias: USER_ALIAS || 'You',
+        avatar_color: 'blue', // Default
+        avatar_face: 'blue'   // Default
+    };
+    
+    const tempMessage = {
+        id: tempMessageId,
+        content: content,
+        timestamp: new Date().toISOString(),
+        author: currentUser,
+        reactions: {},
+        is_temp: true
+    };
+    
+    // Add a temporary message to the UI
+    const messageElement = createMessageElement(tempMessage);
+    messageElement.classList.add('message-pending');
+    messageElement.setAttribute('data-temp-id', tempMessageId);
+    messagesContainer.appendChild(messageElement);
+    
+    // Clear the input field
+    messageInput.value = '';
+    
+    // Scroll to the new message
+    scrollToBottom();
+}
+
+// Add a socket handler for missed messages sync
+socket.on('sync_messages', messages => {
+    console.log('Received missed messages:', messages);
+    
+    if (Array.isArray(messages) && messages.length > 0) {
+        // Sort by timestamp
+        messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        
+        // Process each message
+        messages.forEach(message => {
+            // Check if we already have this message (avoid duplicates)
+            if (!document.querySelector(`.message[data-message-id="${message.id}"]`)) {
+                handleNewMessage(message);
+            }
+        });
+    }
+});
+
+// Add CSS for pending and error message states
+const style = document.createElement('style');
+style.textContent = `
+.message-pending {
+    opacity: 0.7;
+}
+
+.message-pending .message-bubble::after {
+    content: "⏳";
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 12px;
+}
+
+.message-error {
+    opacity: 0.6;
+}
+
+.message-error .message-bubble {
+    border: 1px solid #ef4444;
+}
+
+.message-retry-button {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.message-retry-button:hover {
+    background-color: #dc2626;
+}
+`;
+document.head.appendChild(style);

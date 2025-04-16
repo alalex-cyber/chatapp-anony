@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, jsonify, session
-from .models import db, User, Channel, Message, Post, Comment, Reaction
-from .auth import require_login
+from server.models import db, User, Channel, Message, Post, Comment, Reaction
+from server.auth import require_login
 from datetime import datetime, timedelta
 
 routes = Blueprint('routes', __name__)

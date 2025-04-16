@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, session, current_app
-from .models import db, User, Channel, Message, Post, Comment, Reaction, DirectMessage, Student
-from .auth import require_login
-from .utils import sanitize_text, allowed_file, save_file, encrypt_message, decrypt_message
+from server.models import db, User, Channel, Message, Post, Comment, Reaction, DirectMessage, Student
+from server.auth import require_login
+from server.utils import sanitize_text, allowed_file, save_file, encrypt_message, decrypt_message
 from datetime import datetime
 
 api = Blueprint('api', __name__, url_prefix='/api')

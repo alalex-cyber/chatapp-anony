@@ -433,3 +433,202 @@ def handle_reaction(data):
         print(f"Error processing reaction: {str(e)}")
         db.session.rollback()
         return {"error": "Failed to process reaction"}, 500
+    
+
+@socketio.on('sync_messages')
+def handle_sync_messages(data):
+    """Handle synchronizing missed messages"""
+    logger.info(f"Message sync request received: {data}")
+    
+    if 'channel_id' not in data or 'since' not in data:
+        logger.warning(f"Invalid sync request - missing channel_id or since timestamp")
+        return
+    
+    if 'user_id' not in session:
+        logger.warning(f"User not in session for sync request")
+        return
+    
+    try:
+        # Parse the timestamp
+        from datetime import datetime
+        since_timestamp = datetime.fromisoformat(data['since'].replace('Z', '+00:00'))
+        
+        channel_id = data['channel_id']
+        user_id = session['user_id']
+        
+        # Get messages since the timestamp
+        from server.models import Message
+        messages = Message.query.filter(
+            Message.channel_id == channel_id,
+            Message.timestamp > since_timestamp
+        ).order_by(Message.timestamp).all()
+        
+        logger.info(f"Found {len(messages)} missed messages for channel {channel_id} since {since_timestamp}")
+        
+        # Prepare messages data
+        messages_data = []
+        for message in messages:
+            # Skip the user's own messages as they should already have them
+            if message.user_id == user_id:
+                continue
+                
+            # Get author data
+            from server.models import User
+            author = User.query.get(message.user_id)
+            if not author:
+                continue
+            
+            # Get reactions data
+            reactions = {}
+            for reaction in message.reactions:
+                if reaction.reaction_type not in reactions:
+                    reactions[reaction.reaction_type] = 0
+                reactions[reaction.reaction_type] += 1
+            
+            # Prepare message data
+            content = message.content
+            if message.is_encrypted and current_app.config.get('ENCRYPTION_ENABLED'):
+                # In a real app, we would handle end-to-end encryption appropriately
+                # For this example, we're just acknowledging it's encrypted
+                pass
+                
+            message_data = {
+                "id": message.id,
+                "content": content,
+                "timestamp": message.timestamp.isoformat(),
+                "author": {
+                    "id": author.id,
+                    "alias": author.alias,
+                    "avatar_color": author.avatar_color,
+                    "avatar_face": author.avatar_face
+                },
+                "channel_id": message.channel_id,
+                "reactions": reactions,
+                "is_encrypted": message.is_encrypted
+            }
+            
+            messages_data.append(message_data)
+        
+        # Send the missed messages to the client
+        if messages_data:
+            emit('sync_messages', messages_data)
+            
+    except Exception as e:
+        logger.error(f"Error handling message sync: {str(e)}")
+        return {"error": "Failed to sync messages"}
+
+
+@socketio.on('message_delivered')
+def handle_message_delivered(data):
+    """Handle message delivery acknowledgement"""
+    if 'message_id' not in data:
+        return
+    
+    message_id = data['message_id']
+    logger.info(f"Message {message_id} delivery confirmed")
+    
+    # We could update a delivery status in the database if needed
+    
+    # Acknowledge receipt
+    emit('message_ack', {"message_id": message_id})
+
+
+# Update handle_send_message to include acknowledgement
+@socketio.on('send_message')
+def handle_send_message(data, callback=None):
+    """Handle sending a message to a channel"""
+    logger.info(f"Received message data: {data}")
+    
+    # Validate data
+    if 'content' not in data or 'channel_id' not in data:
+        logger.warning(f"Invalid message data - missing content or channel_id from {request.sid}")
+        if callback:
+            callback({"error": "Missing required fields"})
+        return
+
+    if 'user_id' not in session:
+        logger.warning(f"User not in session for {request.sid}")
+        if callback:
+            callback({"error": "Authentication required"})
+        return
+
+    user_id = session['user_id']
+    content = sanitize_text(data['content'])
+    channel_id = data['channel_id']
+
+    logger.info(f"Processing message from user {user_id} to channel {channel_id}: {content[:30]}...")
+
+    # Check if channel exists
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        logger.warning(f"Channel {channel_id} not found")
+        if callback:
+            callback({"error": "Channel not found"})
+        return
+
+    # Apply end-to-end encryption if enabled
+    is_encrypted = False
+    encryption_data = None
+    
+    if current_app.config.get('ENCRYPTION_ENABLED', False):
+        try:
+            encrypted_content, key, nonce = encrypt_message(content)
+            is_encrypted = True
+            encryption_data = {"key": key, "nonce": nonce}
+        except Exception as e:
+            logger.error(f"Encryption error: {str(e)}")
+            encrypted_content = content
+    else:
+        encrypted_content = content
+
+    # Create and save the message
+    try:
+        new_message = Message(
+            content=encrypted_content,
+            user_id=user_id,
+            channel_id=channel_id,
+            is_encrypted=is_encrypted,
+            timestamp=datetime.utcnow()
+        )
+
+        db.session.add(new_message)
+        db.session.commit()
+        logger.info(f"Message saved with ID: {new_message.id}")
+
+        # Get user for response
+        user = User.query.get(user_id)
+
+        # Prepare the message data for broadcasting
+        message_data = {
+            "id": new_message.id,
+            "content": content,  # Send original content to clients
+            "timestamp": new_message.timestamp.isoformat(),
+            "author": {
+                "id": user.id,
+                "alias": user.alias,
+                "avatar_color": user.avatar_color,
+                "avatar_face": user.avatar_face
+            },
+            "channel_id": channel_id,
+            "is_encrypted": is_encrypted,
+            "reactions": {}
+        }
+
+        # If message is encrypted, add encryption data
+        if is_encrypted and encryption_data:
+            message_data["encryption"] = encryption_data
+
+        # Broadcast to the channel room
+        room = f"channel_{channel_id}"
+        logger.info(f"Broadcasting message to room: {room}")
+        emit('new_message', message_data, to=room)
+
+        # Send success response to sender with the message ID
+        if callback:
+            callback({"status": "success", "message_id": new_message.id})
+
+    except Exception as e:
+        logger.error(f"Error saving message: {str(e)}")
+        db.session.rollback()
+        if callback:
+            callback({"error": "Failed to save message"})

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Registration | Campus Connect</title>
+  <style>
+    /* Same styling as login/registration pages */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    :root {
+      --bg-gradient-dark: linear-gradient(to bottom right, #172554, #312e81, #4c1d95);
+      --bg-gradient-light: linear-gradient(to bottom right, #eff6ff, #e0e7ff, #f5f3ff);
+      --primary-dark: #172554;
+      --primary-light: #ffffff;
+      --blue-950: #172554;
+      --blue-900: #1e3a8a;
+      --blue-800: #1e40af;
+      --blue-700: #1d4ed8;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+      --blue-300: #93c5fd;
+      --blue-200: #bfdbfe;
+      --blue-100: #dbeafe;
+      --blue-50: #eff6ff;
+      --indigo-900: #312e81;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-100: #e0e7ff;
+      --border-dark: rgba(30, 64, 175, 0.3);
+      --border-light: #e5e7eb;
+      --white: #ffffff;
+      --text-dark: #ffffff;
+      --text-light: #172554;
+      --text-muted-dark: #93c5fd;
+      --text-muted-light: #1d4ed8;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      background: var(--bg-gradient-dark);
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    body.light-mode {
+      background: var(--bg-gradient-light);
+      color: var(--text-light);
+    }
+
+    .verify-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem;
+    }
+
+    .verify-card {
+      background-color: rgba(30, 64, 175, 0.3);
+      backdrop-filter: blur(8px);
+      border-radius: 1rem;
+      border: 1px solid var(--border-dark);
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .light-mode .verify-card {
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--border-light);
+    }
+
+    .verify-header {
+      padding: 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .light-mode .verify-header {
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .brand-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 9999px;
+      background-color: var(--indigo-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .light-mode .brand-icon {
+      background-color: var(--indigo-500);
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .light-mode .brand-title {
+      color: var(--indigo-900);
+    }
+
+    .verify-subtitle {
+      color: var(--blue-300);
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .light-mode .verify-subtitle {
+      color: var(--blue-700);
+    }
+
+    .verify-description {
+      color: var(--blue-200);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      max-width: 90%;
+      margin: 0 auto;
+    }
+
+    .light-mode .verify-description {
+      color: var(--blue-800);
+    }
+
+    .verify-body {
+      padding: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--blue-200);
+    }
+
+    .light-mode .form-label {
+      color: var(--blue-800);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background-color: rgba(30, 64, 175, 0.5);
+      border: 1px solid var(--border-dark);
+      border-radius: 0.5rem;
+      color: var(--white);
+      font-size: 0.875rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .light-mode .form-input {
+      background-color: var(--white);
+      border: 1px solid var(--border-light);
+      color: var(--blue-950);
+    }
+
+    .form-input::placeholder {
+      color: var(--blue-300);
+    }
+
+    .light-mode .form-input::placeholder {
+      color: var(--blue-400);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: var(--indigo-600);
+      color: var(--white);
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 1rem;
+    }
+
+    .submit-button:hover {
+      background-color: var(--indigo-700);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .verify-footer {
+      padding: 1.5rem;
+      text-align: center;
+      border-top: 1px solid var(--border-dark);
+    }
+
+    .light-mode .verify-footer {
+      border-top: 1px solid var(--border-light);
+    }
+
+    .resend-code {
+      color: var(--blue-300);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .light-mode .resend-code {
+      color: var(--blue-600);
+    }
+
+    .resend-code:hover {
+      color: var(--blue-200);
+    }
+
+    .light-mode .resend-code:hover {
+      color: var(--blue-800);
+    }
+
+    /* Code input styling */
+    .code-input-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .code-input {
+      flex: 1;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+      padding: 0.5rem 0;
+      background-color: rgba(30, 64, 175, 0.5);
+      border: 1px solid var(--border-dark);
+      border-radius: 0.5rem;
+      color: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .light-mode .code-input {
+      background-color: var(--white);
+      border: 1px solid var(--border-light);
+      color: var(--blue-950);
+    }
+
+    .code-input:focus {
+      outline: none;
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    /* Alert styling */
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .alert-error {
+      background-color: rgba(239, 68, 68, 0.3);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fecaca;
+    }
+
+    .light-mode .alert-error {
+      background-color: rgba(254, 226, 226, 1);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #dc2626;
+    }
+
+    .alert-info {
+      background-color: rgba(59, 130, 246, 0.3);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      color: var(--blue-200);
+    }
+
+    .light-mode .alert-info {
+      background-color: var(--blue-100);
+      border: 1px solid var(--blue-300);
+      color: var(--blue-800);
+    }
+  </style>
+</head>
+<body>
+  <div class="verify-container">
+    <div class="verify-card">
+      <div class="verify-header">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <span class="brand-title">Campus Connect</span>
+        </div>
+        <p class="verify-subtitle">Email Verification</p>
+        <p class="verify-description">
+          We've sent a verification code to <strong>{{ email }}</strong>. 
+          Enter the code below and complete your registration.
+        </p>
+      </div>
+
+      <div class="verify-body">
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        
+        <form id="verify-form" action="{{ url_for('auth.verify_registration') }}" method="post">
+          <div class="form-group">
+            <label for="verification_code" class="form-label">Verification Code</label>
+            <input type="text" id="verification_code" name="verification_code" class="form-input" placeholder="Enter 6-digit code" required maxlength="6">
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" class="form-input" placeholder="Create a secure password" required>
+          </div>
+
+          <div class="form-group">

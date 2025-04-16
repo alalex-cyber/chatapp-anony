@@ -74,6 +74,25 @@ def generate_avatar_data():
     }
 
 
+# Verification code utilities
+def generate_verification_code(length=6):
+    """Generate a random numeric verification code"""
+    return ''.join(random.choices('0123456789', k=length))
+
+
+def is_valid_email(email):
+    """Check if email format is valid"""
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
+
+
+def is_valid_student_id(student_id):
+    """Check if student ID format is valid (customize based on your institution's format)"""
+    # This example assumes student IDs are alphanumeric and between 5-20 chars
+    pattern = r'^[a-zA-Z0-9]{5,20}'
+    return re.match(pattern, student_id) is not None
+
+
 # Content sanitization
 def sanitize_text(text):
     """Basic sanitization for user input"""
@@ -183,3 +202,4 @@ def get_relative_time(timestamp):
         return f"{days} day{'s' if days > 1 else ''} ago"
     else:
         return timestamp.strftime("%b %d, %Y")
+
