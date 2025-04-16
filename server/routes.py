@@ -1,136 +1,161 @@
-from flask import Blueprint, render_template, redirect, url_for, request, jsonify, session, flash, current_app
-from models import db, User, Channel, Message, Post, Comment, Reaction
-from werkzeug.utils import secure_filename
-import os
-import secrets
-from auth import require_login
+from flask import Blueprint, render_template, redirect, url_for, request, jsonify, session
+from .models import db, User, Channel, Message, Post, Comment, Reaction
+from .auth import require_login
+from datetime import datetime, timedelta
 
 routes = Blueprint('routes', __name__)
-api = Blueprint('api', __name__, url_prefix='/api')
 
 
-# Main routes
 @routes.route('/')
 def index():
-    return redirect(url_for('routes.chat'))
+    """Redirect to main chat page or login if not authenticated"""
+    if 'user_id' in session:
+        return redirect(url_for('routes.chat'))
+    return redirect(url_for('auth.login'))
 
 
 @routes.route('/chat')
 @require_login
 def chat():
-    return render_template('chat.html')
+    """Chat interface - the main communication tool"""
+    user_id = session['user_id']
+    user = User.query.get(user_id)
+
+    if not user:
+        # Handle invalid user ID in session
+        session.clear()
+        return redirect(url_for('auth.login'))
+
+    # Get all available channels
+    channels = Channel.query.all()
+
+    # Get recent activity for each channel
+    channel_activity = {}
+    for channel in channels:
+        last_message = Message.query.filter_by(channel_id=channel.id).order_by(Message.timestamp.desc()).first()
+        channel_activity[channel.id] = last_message.timestamp if last_message else None
+
+    # Get online users (excluding current user)
+    online_users = User.query.filter(User.is_online == True, User.id != user_id).all()
+
+    return render_template('chat.html',
+                           user=user,
+                           channels=channels,
+                           channel_activity=channel_activity,
+                           online_users=online_users)
 
 
 @routes.route('/social-feed')
 @require_login
 def social_feed():
-    return render_template('social_feed.html')
+    """Social feed interface for posts and interactions"""
+    user_id = session['user_id']
+    user = User.query.get(user_id)
+
+    if not user:
+        session.clear()
+        return redirect(url_for('auth.login'))
+
+    # Get recent posts (pagination could be added)
+    posts = Post.query.order_by(Post.created_at.desc()).limit(20).all()
+
+    # For each post, get author and like count
+    post_data = []
+    for post in posts:
+        author = User.query.get(post.user_id)
+        like_count = Reaction.query.filter_by(
+            target_id=post.id,
+            target_type='post',
+            reaction_type='like'
+        ).count()
+
+        comment_count = Comment.query.filter_by(post_id=post.id).count()
+
+        post_data.append({
+            'post': post,
+            'author': author,
+            'like_count': like_count,
+            'comment_count': comment_count
+        })
+
+    return render_template('social_feed.html',
+                           user=user,
+                           posts=post_data)
 
 
 @routes.route('/settings')
 @require_login
 def settings():
-    return render_template('settings.html')
+    """User settings interface"""
+    user_id = session['user_id']
+    user = User.query.get(user_id)
+
+    if not user:
+        session.clear()
+        return redirect(url_for('auth.login'))
+
+    return render_template('settings.html', user=user)
 
 
-# API endpoints for messages
-@api.route('/messages', methods=['GET'])
+@routes.route('/profile')
 @require_login
-def get_messages():
-    channel_id = request.args.get('channel_id', 1, type=int)
-    messages = Message.query.filter_by(channel_id=channel_id).order_by(Message.timestamp).all()
+def profile():
+    """User profile view"""
+    user_id = session['user_id']
+    user = User.query.get(user_id)
 
-    messages_data = []
-    for message in messages:
-        author = User.query.get(message.user_id)
-        reactions_data = {}
-        for reaction in message.reactions:
-            reactions_data[reaction.reaction_type] = reactions_data.get(reaction.reaction_type, 0) + 1
+    if not user:
+        session.clear()
+        return redirect(url_for('auth.login'))
 
-        messages_data.append({
-            "id": message.id,
-            "content": message.content,
-            "timestamp": message.timestamp.isoformat(),
-            "author": {
-                "id": author.id,
-                "alias": author.alias,
-                "avatar_color": author.avatar_color,
-                "avatar_face": author.avatar_face
-            },
-            "reactions": reactions_data
-        })
+    # Get user stats
+    post_count = Post.query.filter_by(user_id=user_id).count()
+    comment_count = Comment.query.filter_by(user_id=user_id).count()
+    message_count = Message.query.filter_by(user_id=user_id).count()
 
-    return jsonify(messages_data)
+    # Calculate account age in days
+    account_age = (datetime.utcnow() - user.created_at).days
+
+    # Get recent activity
+    recent_messages = Message.query.filter_by(user_id=user_id).order_by(Message.timestamp.desc()).limit(5).all()
+    recent_posts = Post.query.filter_by(user_id=user_id).order_by(Post.created_at.desc()).limit(5).all()
+
+    return render_template('user_profile.html',
+                           user=user,
+                           post_count=post_count,
+                           comment_count=comment_count,
+                           message_count=message_count,
+                           account_age=account_age,
+                           recent_messages=recent_messages,
+                           recent_posts=recent_posts)
 
 
-@api.route('/messages', methods=['POST'])
+# Additional route for viewing other users' profiles (limited info for anonymity)
+@routes.route('/user/<int:user_id>')
 @require_login
-def create_message():
-    data = request.get_json()
+def view_user(user_id):
+    """View another user's profile with limited information"""
+    current_user_id = session['user_id']
 
-    if not data or 'content' not in data or 'channel_id' not in data:
-        return jsonify({"error": "Missing required fields"}), 400
+    # Don't allow viewing your own profile via this route
+    if user_id == current_user_id:
+        return redirect(url_for('routes.profile'))
 
-    new_message = Message(
-        content=data['content'],
-        user_id=session['user_id'],
-        channel_id=data['channel_id']
-    )
+    user = User.query.get(user_id)
+    if not user:
+        return redirect(url_for('routes.chat'))
 
-    db.session.add(new_message)
-    db.session.commit()
+    # Get limited stats for anonymity
+    post_count = Post.query.filter_by(user_id=user_id).count()
+    days_active = (datetime.utcnow() - user.created_at).days
 
-    return jsonify(new_message.to_dict()), 201
+    # Check if user is online
+    is_online = user.is_online
+    last_seen = user.last_seen
 
-
-# API endpoints for posts
-@api.route('/posts', methods=['GET'])
-@require_login
-def get_posts():
-    posts = Post.query.order_by(Post.created_at.desc()).all()
-
-    posts_data = []
-    for post in posts:
-        author = User.query.get(post.user_id)
-        posts_data.append({
-            "id": post.id,
-            "content": post.content,
-            "image_url": post.image_url,
-            "created_at": post.created_at.isoformat(),
-            "author": author.to_dict(),
-            "comment_count": Comment.query.filter_by(post_id=post.id).count(),
-            "like_count": Reaction.query.filter_by(target_id=post.id, target_type='post', reaction_type='like').count()
-        })
-
-    return jsonify(posts_data)
-
-
-@api.route('/posts', methods=['POST'])
-@require_login
-def create_post():
-    if request.content_type and request.content_type.startswith('multipart/form-data'):
-        content = request.form.get('content')
-        image = request.files.get('image')
-
-        image_url = None
-        if image and allowed_file(image.filename):
-            filename = secure_filename(f"{secrets.token_hex(8)}_{image.filename}")
-            image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-            image_url = f"/static/uploads/{filename}"
-    else:
-        data = request.get_json()
-        if not data or 'content' not in data:
-            return jsonify({"error": "Missing content"}), 400
-        content = data['content']
-        image_url = data.get('image_url')
-
-    new_post = Post(content=content, image_url=image_url, user_id=session['user_id'])
-    db.session.add(new_post)
-    db.session.commit()
-
-    return jsonify(new_post.to_dict()), 201
-
-
-# Utility function
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+    return render_template('view_user.html',
+                           user=user,
+                           post_count=post_count,
+                           days_active=days_active,
+                           is_online=is_online,
+                           last_seen=last_seen)

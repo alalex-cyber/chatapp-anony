@@ -1,8 +1,8 @@
 from datetime import datetime
 import json
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import foreign
+from server.extensions import db
 
-db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +14,7 @@ class User(db.Model):
     is_online = db.Column(db.Boolean, default=False)
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    student_id = db.Column(db.String(20), unique=True)
 
     messages = db.relationship('Message', backref='author', lazy=True)
     posts = db.relationship('Post', backref='author', lazy=True)
@@ -35,7 +36,6 @@ class User(db.Model):
             'is_online': self.is_online,
         }
 
-
 class Channel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
@@ -50,7 +50,6 @@ class Channel(db.Model):
             'name': self.name,
             'description': self.description
         }
-
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -71,7 +70,6 @@ class Message(db.Model):
             'channel_id': self.channel_id
         }
 
-
 class DirectMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
@@ -83,7 +81,6 @@ class DirectMessage(db.Model):
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages')
     recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_messages')
 
-
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
@@ -92,11 +89,14 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     comments = db.relationship('Comment', backref='post', lazy=True,
-                               cascade='all, delete-orphan')
-    reactions = db.relationship('Reaction', backref='post', lazy=True,
-                                cascade='all, delete-orphan',
-                                primaryjoin="and_(Post.id==Reaction.target_id, "
-                                            "Reaction.target_type=='post')")
+                              cascade='all, delete-orphan')
+    reactions = db.relationship(
+        'Reaction',
+        primaryjoin="and_(Post.id==foreign(Reaction.target_id), Reaction.target_type=='post')",
+        backref=db.backref('post_parent', uselist=False),
+        lazy=True,
+        viewonly=True
+    )
 
     def to_dict(self):
         return {
@@ -120,10 +120,13 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
-    reactions = db.relationship('Reaction', backref='comment', lazy=True,
-                                cascade='all, delete-orphan',
-                                primaryjoin="and_(Comment.id==Reaction.target_id, "
-                                            "Reaction.target_type=='comment')")
+    reactions = db.relationship(
+        'Reaction',
+        primaryjoin="and_(Comment.id==foreign(Reaction.target_id), Reaction.target_type=='comment')",
+        backref=db.backref('comment_parent', uselist=False),
+        lazy=True,
+        viewonly=True
+    )
 
 class Reaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -140,3 +143,8 @@ class Reaction(db.Model):
     __table_args__ = (
         db.UniqueConstraint('user_id', 'target_id', 'target_type', 'reaction_type'),
     )
+
+class Student(db.Model):
+    id = db.Column(db.String(20), primary_key=True)
+    is_registered = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)

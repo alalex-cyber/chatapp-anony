@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+  <script>
+    const USER_ID = {{ user.id|default('null')|tojson|safe }};
+    const USER_ALIAS = "{{ user.alias|default('Anonymous')|e }}";
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Social Feed | Campus Connect</title>
@@ -1522,5 +1527,6 @@
       });
     }
   </script>
+<script src="/static/js/social_feed.js"></script>
 </body>
 </html>

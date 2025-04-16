@@ -88,20 +88,27 @@ def logout():
 
 @app.route('/chat')
 def chat():
-    # Check if user is logged in
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    # Serve the university chat page
-    return render_template('chat.html')
+    if 'username' in session:
+        # Get username from session
+        username = session['username']
+        # Get user data
+        user = mock_users.get(username)
+        # Pass user to template
+        return render_template('chat.html', user=user)
+    return redirect(url_for('login'))
 
 
 @app.route('/social-feed')
 def social_feed():
-    # Check if user is logged in
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    # Serve the social feed page
-    return render_template('social_feed.html')
+    # If you're using session-based authentication
+    if 'username' in session:
+        username = session['username']
+        user = mock_users.get(username)
+        return render_template('social_feed.html', user=user)
+    # For testing/temporary use, you can use a mock user
+    else:
+        mock_user = {"id": 1, "alias": "Anonymous"}
+        return render_template('social_feed.html', user=mock_user)
 
 
 @app.route('/settings')

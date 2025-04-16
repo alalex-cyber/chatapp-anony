@@ -1,13 +1,17 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session, flash
-from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_migrate import Migrate
 from flask_cors import CORS
+from flask_socketio import emit, join_room, leave_room
 from datetime import datetime
 import os
 import secrets
 import json
 import random
+
+from flask_socketio import join_room
+
+# Import shared extensions
+from server.extensions import db, socketio
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -15,78 +19,16 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key_for_development
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///campus_connect.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize extensions
-db = SQLAlchemy(app)
-socketio = SocketIO(app, cors_allowed_origins="*")
+# Initialize extensions with the app
+db.init_app(app)
+socketio.init_app(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
+print("SocketIO initialized with CORS allowed origins:")
+
 migrate = Migrate(app, db)
 CORS(app)
 
-
-# Models
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    alias = db.Column(db.String(50), unique=True, nullable=False)
-    session_id = db.Column(db.String(100), unique=True, nullable=False)
-    avatar_color = db.Column(db.String(20), nullable=False)
-    avatar_face = db.Column(db.String(20), nullable=False)
-    settings = db.Column(db.Text, default='{}')
-    is_online = db.Column(db.Boolean, default=False)
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    messages = db.relationship('Message', backref='author', lazy=True)
-    posts = db.relationship('Post', backref='author', lazy=True)
-
-    def get_settings(self):
-        return json.loads(self.settings)
-
-    def set_settings(self, settings_dict):
-        self.settings = json.dumps(settings_dict)
-
-
-class Channel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    description = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    messages = db.relationship('Message', backref='channel', lazy=True)
-
-
-class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    channel_id = db.Column(db.Integer, db.ForeignKey('channel.id'), nullable=False)
-
-    reactions = db.relationship('Reaction', backref='message', lazy=True)
-
-
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
-    image_url = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-    comments = db.relationship('Comment', backref='post', lazy=True)
-
-
-class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-
-
-class Reaction(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    reaction_type = db.Column(db.String(20), nullable=False)
-    message_id = db.Column(db.Integer, db.ForeignKey('message.id'), nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+# Import models after extensions are initialized
+from server.models import User, Channel, Message, Post, Comment, Reaction, Student, DirectMessage
 
 
 # Helper functions
@@ -157,7 +99,7 @@ def create_anonymous_user():
 
 # API endpoints
 @app.route('/api/messages', methods=['GET'])
-def get_messages():
+def get_channel_messages():
     channel_id = request.args.get('channel_id', 1, type=int)
     messages = Message.query.filter_by(channel_id=channel_id).order_by(Message.timestamp).all()
 
@@ -186,17 +128,24 @@ def create_message():
     if not data or 'content' not in data or 'channel_id' not in data:
         return jsonify({"error": "Missing required fields"}), 400
 
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Authentication required"}), 401
+
+    # Create the message using ORM
     new_message = Message(
         content=data['content'],
-        user_id=session['user_id'],
+        user_id=user_id,
         channel_id=data['channel_id']
     )
 
     db.session.add(new_message)
     db.session.commit()
 
-    # Emit message via WebSocket
+    # Get the author
     author = User.query.get(new_message.user_id)
+
+    # Prepare message data for response
     message_data = {
         "id": new_message.id,
         "content": new_message.content,
@@ -209,6 +158,7 @@ def create_message():
         }
     }
 
+    # Emit via Socket.IO
     socketio.emit('new_message', message_data, room=f"channel_{data['channel_id']}")
 
     return jsonify(message_data), 201
@@ -251,18 +201,31 @@ def handle_typing(data):
         emit('typing', {"user_id": user.id, "alias": user.alias}, room=room, include_self=False)
 
 
-# Initialize database
-@app.before_first_request
-def create_default_data():
+# CLI Commands
+@app.cli.command("init-db")
+def init_db_command():
+    """Initialize the database with tables and initial data."""
+    db.create_all()
+
     # Create default channels if they don't exist
     if Channel.query.count() == 0:
         db.session.add(Channel(name="General", description="General discussion for everyone"))
         db.session.add(Channel(name="Social Feed", description="Share moments with your campus community"))
         db.session.commit()
 
+    print("Initialized the database.")
+
+
+# Initialize database
+# Create an app context for database initialization
+with app.app_context():
+    db.create_all()
+    # Create default channels if they don't exist
+    if Channel.query.count() == 0:
+        db.session.add(Channel(name="General", description="General discussion for everyone"))
+        db.session.add(Channel(name="Social Feed", description="Share moments with your campus community"))
+        db.session.commit()
 
 # Run app
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     socketio.run(app, debug=True)

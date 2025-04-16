@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+  <script>
+    const USER_ID = {{ user.id|default('null')|tojson|safe }};
+    const USER_ALIAS = "{{ user.alias|default('Anonymous')|e }}";
+    console.log("User ID:", USER_ID);
+    console.log("User Alias:", USER_ALIAS);
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>University Chat</title>
@@ -1691,11 +1698,11 @@
         <div class="sidebar-section-title">Channels</div>
 
         <div class="channel-list">
-          <div class="channel active">
+          <div class="channel active" data-channel-id="1">
             <span># General</span>
             <span class="channel-badge">5</span>
           </div>
-          <div class="channel">
+          <div class="channel" data-channel-id="2">
             <span># Social Feed</span>
           </div>
         </div>
@@ -1871,169 +1878,22 @@
         </div>
       </div>
 
-      <!-- Messages Container -->
-      <div class="messages-container">
-        <!-- Date Divider -->
-        <div class="date-divider">
-          <div class="date-pill">
-            Today, April 9
-          </div>
-        </div>
-
-        <!-- System Message -->
+      <!-- Messages Container (Moved from sidebar to main content) -->
+      <div class="messages-container" id="messages-container">
+        <!-- Messages will be loaded here -->
         <div class="system-message">
           <div class="system-message-content">
-            Alex joined the channel
+            Welcome to Campus Connect! Start chatting anonymously with your peers.
           </div>
         </div>
+      </div>
 
-        <div class="messages-spacer"></div>
-
-        <!-- Message 1 -->
-        <div class="message">
-          <div class="message-avatar blue">
-            <div class="avatar-face blue">
-              <div class="avatar-dot blue left"></div>
-              <div class="avatar-dot blue right"></div>
-              <div class="avatar-mouth blue"></div>
-            </div>
-          </div>
-          <div class="message-content">
-            <div class="message-bubble">
-              <div class="message-header">
-                <span class="message-sender">
-                  Anonymous
-                  <span class="sender-badge">Student</span>
-                </span>
-                <span class="message-time">9:30 AM</span>
-              </div>
-              <p class="message-text">
-                Does anyone know if the library is open late during finals week?
-              </p>
-              <div class="message-reactions">
-                <span class="reaction">
-                  👍 2
-                </span>
-                <span class="add-reaction">
-                  +
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Message 2 -->
-        <div class="message">
-          <div class="message-avatar blue">
-            <div class="avatar-face blue">
-              <div class="avatar-dot blue left"></div>
-              <div class="avatar-dot blue right"></div>
-              <div class="avatar-mouth blue"></div>
-            </div>
-          </div>
-          <div class="message-content">
-            <div class="message-bubble">
-              <div class="message-header">
-                <span class="message-sender">
-                  Anonymous
-                  <span class="sender-badge">Student</span>
-                </span>
-                <span class="message-time">9:32 AM</span>
-              </div>
-              <p class="message-text">
-                Yeah, it's open until 2 AM starting next Monday.
-              </p>
-              <div class="message-reactions">
-                <span class="reaction">
-                  🙏 3
-                </span>
-              </div>
-            </div>
-            <div class="message-actions">
-              <button class="message-action">Reply</button>
-              <button class="message-action">Share</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Message 3 -->
-        <div class="message">
-          <div class="message-avatar pink">
-            <div class="avatar-face pink">
-              <div class="avatar-dot pink left"></div>
-              <div class="avatar-dot pink right"></div>
-              <div class="avatar-mouth pink"></div>
-            </div>
-          </div>
-          <div class="message-content">
-            <div class="message-bubble">
-              <div class="message-header">
-                <span class="message-sender">
-                  Anonymous
-                  <span class="sender-badge">Student</span>
-                </span>
-                <span class="message-time">9:34 AM</span>
-              </div>
-              <p class="message-text">
-                Has anyone started the assignment for Dr. Smith's class?
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Message 4 -->
-        <div class="message">
-          <div class="message-avatar yellow">
-            <div class="avatar-face yellow">
-              <div class="avatar-dot yellow left"></div>
-              <div class="avatar-dot yellow right"></div>
-              <div class="avatar-mouth yellow"></div>
-            </div>
-          </div>
-          <div class="message-content">
-            <div class="message-bubble">
-              <div class="message-header">
-                <span class="message-sender">
-                  Anonymous
-                  <span class="sender-badge">Student</span>
-                </span>
-                <span class="message-time">9:35 AM</span>
-              </div>
-              <p class="message-text">
-                I haven't yet, planning to start it this weekend. It looks challenging!
-              </p>
-              <div class="attachment">
-                <div class="attachment-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-300">
-                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                  </svg>
-                </div>
-                <div class="attachment-info">
-                  <div class="attachment-name">Assignment-Guidelines.pdf</div>
-                  <div class="attachment-meta">2.4 MB • Tap to download</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Typing Indicator -->
-        <div class="message">
-          <div class="message-avatar green">
-            <div class="avatar-face green">
-              <div class="avatar-dot green left"></div>
-              <div class="avatar-dot green right"></div>
-              <div class="avatar-mouth green"></div>
-            </div>
-          </div>
-          <div class="typing-indicator">
-            <div class="typing-dots">
-              <div class="typing-dot"></div>
-              <div class="typing-dot"></div>
-              <div class="typing-dot"></div>
-            </div>
-          </div>
+      <!-- Add typing indicator template (will be hidden initially) -->
+      <div class="typing-indicator" style="display: none;">
+        <div class="typing-dots">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
         </div>
       </div>
 
@@ -2088,11 +1948,11 @@
         </div>
       </div>
 
-      <!-- Message Input -->
-      <div class="message-input-container">
+      <!-- Message Input (Moved from sidebar to main content) -->
+      <form id="message-form" class="message-input-container">
         <div class="message-input-wrapper">
           <div class="message-input-actions">
-            <button id="emoji-toggle" class="input-icon-button">
+            <button type="button" id="emoji-toggle" class="input-icon-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <path d="M8 14s1.5 2 4 2 4-2 4-2" />
@@ -2100,14 +1960,12 @@
                 <line x1="15" x2="15.01" y1="9" y2="9" />
               </svg>
             </button>
-            <button class="input-icon-button">
+            <button type="button" id="attachment-button" class="input-icon-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="18" height="18" x="3" y="3" rx="2" />
-                <circle cx="9" cy="9" r="2" />
-                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
               </svg>
             </button>
-            <button id="recording-toggle" class="input-icon-button">
+            <button type="button" id="recording-toggle" class="input-icon-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
@@ -2115,15 +1973,15 @@
               </svg>
             </button>
           </div>
-          <input type="text" placeholder="Type a message..." class="message-input">
-          <button class="send-button">
+          <input type="text" id="message-input" placeholder="Type a message..." class="message-input">
+          <button type="submit" class="send-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="send-icon">
               <path d="M22 2 11 13"></path>
               <path d="M22 2 15 22 11 13 2 9 22 2z"></path>
             </svg>
           </button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 
@@ -2146,12 +2004,12 @@
     });
 
     // Add after the dark mode toggle code
-const mobileMenuToggle = document.querySelector('.header-title svg');
-const sidebar = document.querySelector('.sidebar');
+    const mobileMenuToggle = document.querySelector('.header-title svg');
+    const sidebar = document.querySelector('.sidebar');
 
-mobileMenuToggle.addEventListener('click', () => {
-  sidebar.classList.toggle('mobile-visible');
-});
+    mobileMenuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('mobile-visible');
+    });
 
     // Toggle Pomodoro Timer Panel
     const pomodoroToggle = document.getElementById('pomodoro-toggle');
@@ -2213,7 +2071,7 @@ mobileMenuToggle.addEventListener('click', () => {
 
     // Add functionality to emoji buttons
     const emojiButtons = emojiPicker.querySelectorAll('.emoji-button');
-    const messageInput = document.querySelector('.message-input');
+    const messageInput = document.getElementById('message-input');
 
     emojiButtons.forEach(button => {
       button.addEventListener('click', () => {
@@ -2278,6 +2136,7 @@ mobileMenuToggle.addEventListener('click', () => {
     function updateTimerDisplay() {
       timerDisplay.textContent = `${timerMinutes < 10 ? '0' + timerMinutes : timerMinutes}:${timerSeconds < 10 ? '0' + timerSeconds : timerSeconds}`;
     }
+
     // Add navigation functionality to channel items
     const channelItems = document.querySelectorAll('.channel');
     channelItems.forEach(channel => {
@@ -2290,6 +2149,7 @@ mobileMenuToggle.addEventListener('click', () => {
           }
         });
       });
+
     // Settings icon click handler
     const settingsIcon = document.getElementById('settings-icon');
     if (settingsIcon) {
@@ -2297,10 +2157,12 @@ mobileMenuToggle.addEventListener('click', () => {
         window.location.href = '/settings';
       });
     }
+
     const leaveButton = document.querySelector('.leave-button');
     leaveButton.addEventListener('click', () => {
       window.location.href = '/logout';
     });
+
     // Profile link functionality
     const profileLink = document.getElementById('profile-link');
     if (profileLink) {
@@ -2309,5 +2171,7 @@ mobileMenuToggle.addEventListener('click', () => {
       });
     }
   </script>
+  <!-- At the end of your template, before </body> -->
+  <script src="/static/js/chat.js"></script>
 </body>
 </html>
