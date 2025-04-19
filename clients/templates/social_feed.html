@@ -4,6 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Social Feed | Campus Connect</title>
+  <!-- Lucide Icons Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.244.0/lucide.min.js"></script>
+
+<!-- Initialize Lucide Icons -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded, initializing icons');
+    lucide.createIcons();
+    
+    // Re-run createIcons to ensure all icons are properly initialized
+    setTimeout(function() {
+      console.log('Re-initializing icons to catch any missed');
+      lucide.createIcons();
+    }, 500);
+  });
+</script>
   <style>
     /* Reset and base styles */
     * {
@@ -14,9 +30,9 @@
     }
 
     :root {
-      --bg-gradient-dark: linear-gradient(to bottom right, #172554, #312e81, #4c1d95);
-      --bg-gradient-light: linear-gradient(to bottom right, #eff6ff, #e0e7ff, #f5f3ff);
-      --primary-dark: #172554;
+      --bg-gradient-dark: linear-gradient(135deg, #1e1e2f, #2d3748);
+      --bg-gradient-light: linear-gradient(135deg, #f8fafc, #edf2f7);
+      --primary-dark: #1a202c;
       --primary-light: #ffffff;
       --blue-950: #172554;
       --blue-900: #1e3a8a;
@@ -49,13 +65,17 @@
       --purple-500: #a855f7;
       --pink-500: #ec4899;
       --teal-500: #14b8a6;
-      --border-dark: rgba(30, 64, 175, 0.3);
-      --border-light: #e5e7eb;
+      --border-dark: rgba(30, 64, 175, 0.15);
+      --border-light: rgba(226, 232, 240, 0.8);
       --white: #ffffff;
-      --text-dark: #ffffff;
-      --text-light: #172554;
-      --text-muted-dark: #93c5fd;
-      --text-muted-light: #1d4ed8;
+      --text-dark: #f8fafc;
+      --text-light: #1a202c;
+      --text-muted-dark: #94a3b8;
+      --text-muted-light: #475569;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
     }
 
     body {
@@ -64,6 +84,9 @@
       overflow: hidden;
       background: var(--bg-gradient-dark);
       color: var(--text-dark);
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     body.light-mode {
@@ -82,44 +105,17 @@
 
     /* Sidebar */
     .sidebar {
+      width: 280px;
+      background-color: rgba(23, 37, 84, 0.9);
       display: flex;
-      width: 16rem;
       flex-direction: column;
-      background-color: rgba(23, 37, 84, 0.7);
-      backdrop-filter: blur(8px);
-      border-right: 1px solid var(--border-dark);
-      display: none;
-      overflow-y: auto; /* Enable scrolling in sidebar */
-      scrollbar-width: thin;
-      scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
-    }
-
-    /* Sidebar scrollbar styles */
-    .sidebar::-webkit-scrollbar {
-      width: 4px;
-      background-color: transparent;
-    }
-
-    .sidebar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb {
-      background-color: rgba(59, 130, 246, 0.3);
-      border-radius: 20px;
-      transition: opacity 0.3s ease;
-    }
-
-    .sidebar:hover::-webkit-scrollbar-thumb {
-      background-color: rgba(59, 130, 246, 0.5);
-    }
-
-    .light-mode .sidebar::-webkit-scrollbar-thumb {
-      background-color: rgba(37, 99, 235, 0.2);
-    }
-
-    .light-mode .sidebar:hover::-webkit-scrollbar-thumb {
-      background-color: rgba(37, 99, 235, 0.4);
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 40;
+      overflow: hidden;
+      transition: transform 0.3s ease;
     }
 
     .light-mode .sidebar {
@@ -127,28 +123,27 @@
       border-right: 1px solid var(--border-light);
     }
 
-    @media (min-width: 768px) {
-      .sidebar {
-        display: flex;
-      }
-    }
-
+    /* Sidebar Content Area */
     .sidebar-content {
+      flex: 1;
+      min-height: 0;
       padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      overflow: hidden;
     }
 
+    /* App Brand Styling */
     .app-brand {
+      width: calc(100% - 2rem);
+      margin: 0.3rem 1rem 1rem 1rem;
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin-bottom: 2rem;
-      padding: 0.75rem 0.5rem;
-      background-color: rgba(79, 70, 229, 0.5);
+      padding: 0.75rem 1rem;
+      background-color: rgba(79, 70, 229, 0.3);
       border-radius: 0.75rem;
-    }
-
-    .light-mode .app-brand {
-      background-color: var(--indigo-100);
     }
 
     .brand-icon {
@@ -160,6 +155,8 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
     .light-mode .brand-icon {
@@ -168,42 +165,78 @@
 
     .brand-title {
       font-size: 1.125rem;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--white);
+      letter-spacing: -0.025em;
     }
 
     .light-mode .brand-title {
       color: var(--indigo-900);
     }
 
+    /* Section Titles */
     .sidebar-section-title {
-      margin-bottom: 1.5rem;
+      width: 100%;
+      text-align: left;
+      padding: 0 1rem;
+      margin: 1rem 0 0.5rem 0;
       color: var(--blue-400);
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      font-weight: 500;
-      padding: 0 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
     }
 
     .light-mode .sidebar-section-title {
       color: var(--blue-900);
     }
 
+    /* Channel List */
     .channel-list {
+      width: 100%;
+      padding: 0 1rem;
       margin-bottom: 1.5rem;
     }
 
     .channel {
-      padding: 0.5rem 0.75rem;
+      width: 100%;
+      padding: 0.75rem 1rem;
       border-radius: 0.5rem;
+      margin-bottom: 0.25rem;
       font-weight: 500;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 0.75rem;
       cursor: pointer;
-      transition: background-color 0.2s;
-      color: rgba(147, 197, 253, 0.8);
-      margin-bottom: 0.25rem;
+      transition: all 0.2s ease;
+      color: var(--blue-300);
+    }
+
+    /* Make sure icons in channels are visible */
+    .channel svg,
+    .channel i {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: currentColor;
+      stroke-width: 2px;
+    }
+    
+    .channel.active svg,
+    .channel.active i {
+      color: white;
+    }
+    
+    .channel span {
+      flex: 1;
+    }
+    
+    .channel span:last-child:not(:nth-child(2)) {
+  flex: 0;
+  margin-left: auto;
     }
 
     .light-mode .channel {
@@ -211,7 +244,7 @@
     }
 
     .channel:hover {
-      background-color: rgba(30, 64, 175, 0.3);
+      background-color: rgba(30, 64, 175, 0.4);
     }
 
     .light-mode .channel:hover {
@@ -221,6 +254,7 @@
     .channel.active {
       background-color: rgba(79, 70, 229, 0.8);
       color: var(--white);
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
     }
 
     .light-mode .channel.active {
@@ -239,162 +273,261 @@
       background-color: rgba(37, 99, 235, 0.2);
     }
 
-    .deadline-card {
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border-radius: 0.5rem;
-      background-color: rgba(30, 64, 175, 0.3);
+    /* Bottom Section */
+    .sidebar-bottom {
+      width: 100%;
+      padding: 1rem;
+      background-color: rgba(30, 64, 175, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: auto;
     }
 
-    .light-mode .deadline-card {
-      background-color: rgba(219, 234, 254, 0.7);
+    .light-mode .sidebar-bottom {
+      background-color: rgba(219, 234, 254, 0.4);
+      border-top: 1px solid var(--border-light);
     }
 
-    .deadline-date {
-      font-size: 0.75rem;
-      color: var(--blue-300);
+    /* Settings & Leave Buttons */
+    .settings-button, .leave-button {
+      width: 100%;
+      padding: 0.75rem 1rem;
       margin-bottom: 0.5rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
     }
 
-    .light-mode .deadline-date {
-      color: var(--blue-800);
+    /* Dark Mode Settings Button */
+    .settings-button {
+      background: rgba(59, 130, 246, 0.3);
+      color: var(--blue-200);
+      border: 1px solid rgba(59, 130, 246, 0.2);
     }
-    /*.light-mode .reset-button:hover {*/
-    /*    color: var(--blue-800)*/
-    /*  }*/
-      .deadline-title {
-        color: var(--white);
 
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin-bottom: 0.25rem;
-      }
+    .settings-button:hover {
+      background: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-      .light-mode .deadline-title {
-        color: var(--blue-950);
-      }
+    /* Dark Mode Leave Button */
+    .leave-button {
+      background: rgba(220, 38, 38, 0.3);
+      color: var(--red-300);
+      border: 1px solid rgba(220, 38, 38, 0.2);
+      margin-bottom: 1rem;
+    }
 
-      .deadline-info {
-        font-size: 0.75rem;
-        color: var(--blue-300);
-      }
+    .leave-button:hover {
+      background: rgba(220, 38, 38, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-      .light-mode .deadline-info {
-        color: var(--blue-700);
-      }
+    /* Light Mode Settings Button */
+    .light-mode .settings-button {
+      background-color: var(--blue-50);
+      border: 1px solid var(--blue-100);
+      color: var(--blue-600);
+    }
 
-      .dm-list {
-        margin-bottom: 1.5rem;
-      }
+    .light-mode .settings-button:hover {
+      background-color: var(--blue-100);
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+    }
 
-      .dm-item {
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.5rem;
+    /* Light Mode Leave Button */
+    .light-mode .leave-button {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--red-600);
+    }
+
+    .light-mode .leave-button:hover {
+      background-color: rgba(239, 68, 68, 0.2);
+      box-shadow: 0 4px 6px rgba(239, 68, 68, 0.1);
+    }
+    .settings-button i,
+.settings-button svg,
+.leave-button i,
+.leave-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+    /* User Profile */
+    .user-profile {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+      border-radius: 0.5rem;
+      background-color: rgba(30, 64, 175, 0.3);
         cursor: pointer;
-        transition: background-color 0.2s;
-        color: rgba(147, 197, 253, 0.8);
-      }
+      transition: all 0.2s ease;
+    }
 
-      .light-mode .dm-item {
-        color: var(--blue-800);
-      }
+    .user-profile:hover {
+      background-color: rgba(30, 64, 175, 0.4);
+    }
 
-      .dm-item:hover {
-        background-color: rgba(30, 64, 175, 0.3);
-      }
+    .light-mode .user-profile {
+      background-color: rgba(219, 234, 254, 0.7);
+      border-color: var(--border-light);
+    }
 
-      .light-mode .dm-item:hover {
-        background-color: var(--blue-100);
+    .light-mode .user-profile:hover {
+      background-color: rgba(219, 234, 254, 0.9);
+    }
+
+    .avatar-container {
+      margin-right: 0.75rem;
       }
 
       .avatar {
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: 9999px;
-        position: relative;
-      }
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-      .avatar.green {
-        background-color: var(--green-500);
-      }
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
 
-      .avatar.purple {
-        background-color: var(--indigo-500);
-      }
+    .username {
+      font-weight: 500;
+      color: var(--white);
+      font-size: 0.95rem;
+    }
 
-      .status-indicator {
-        width: 0.625rem;
-        height: 0.625rem;
-        border-radius: 9999px;
+    .light-mode .username {
+      color: var(--blue-900);
+    }
+
+    /* Logo glow effect */
+    .logo-glow {
         position: absolute;
-        bottom: 0;
+      top: 0;
+      left: 0;
         right: 0;
-        border: 2px solid var(--blue-950);
-      }
+      bottom: 0;
+      background: radial-gradient(circle at center, rgba(112, 105, 250, 0.7) 0%, transparent 70%);
+      border-radius: 9999px;
+      opacity: 0.8;
+      filter: blur(5px);
+      animation: glow 3s ease-in-out infinite;
+    }
 
-      .status-indicator.online {
-        background-color: var(--green-300);
+    @keyframes glow {
+      0%, 100% {
+        opacity: 0.7;
       }
-
-      .status-indicator.offline {
-        background-color: #9ca3af;
+      50% {
+        opacity: 1;
       }
+    }
 
-      .user-profile {
-        margin-top: auto;
-        padding: 0.75rem;
-        border-radius: 0.75rem;
-        background-color: rgba(30, 64, 175, 0.5);
+    /* Main Content Adjustment */
+    .main-content {
+      flex: 1;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
+      flex-direction: column;
+      overflow: hidden;
+      padding-top: 0;
+      width: 100%;
+      min-height: 100vh;
+    }
 
-      .light-mode .user-profile {
-        background-color: var(--blue-100);
-      }
-
-      .user {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .user-avatar {
-        width: 2rem;
-        height: 2rem;
-        border-radius: 9999px;
-        background-color: var(--indigo-600);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .light-mode .user-avatar {
-        background-color: var(--indigo-500);
-      }
-
-      .user-name {
-        font-weight: 500;
-        color: var(--white);
-      }
-
-      .light-mode .user-name {
-        color: var(--indigo-950);
-      }
-
-      /* Main content */
+    @media (min-width: 768px) {
       .main-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        max-height: 100vh;
+        margin-left: 280px;
+        width: calc(100% - 280px);
+      }
+      
+      .sidebar {
+        transform: translateX(0);
+      }
+    }
+
+    /* Mobile sidebar styles */
+    @media (max-width: 767px) {
+      .sidebar {
+        transform: translateX(-100%);
+        top: 0;
+        width: 70%;
+        z-index: 999;
+        transition: transform 0.3s ease;
+        height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 320px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+        border-radius: 0 12px 12px 0;
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      }
+      
+      .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+        transition: margin-left 0.3s ease;
+      }
+      
+      body.sidebar-open {
         overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
+      
+      /* Improve scrolling on mobile */
+      .sidebar-content {
+        padding-bottom: 100px; /* Add extra space for scrolling */
+      }
+      
+      /* Larger touch targets for channel items */
+      .channel {
+        padding: 12px 15px;
+        margin-bottom: 4px;
+      }
+      
+      /* Larger area for user profile section */
+      .user-profile {
+        padding: 15px;
+      }
+    }
+
+    /* Sidebar overlay */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 39;
+      display: none;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .sidebar-overlay.show {
+      display: block;
+      opacity: 1;
       }
 
       /* Header */
@@ -406,6 +539,10 @@
         background-color: rgba(23, 37, 84, 0.5);
         backdrop-filter: blur(8px);
         border-bottom: 1px solid var(--border-dark);
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
       }
 
       .light-mode .header {
@@ -417,6 +554,55 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
+      }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: var(--blue-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      min-height: 40px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      padding: 0;
+    }
+
+    .menu-toggle:hover {
+      background-color: rgba(30, 64, 175, 0.2);
+      color: var(--white);
+    }
+
+    .menu-toggle:active {
+      transform: scale(0.95);
+    }
+
+    .light-mode .menu-toggle {
+      color: var(--blue-700);
+    }
+
+    .light-mode .menu-toggle:hover {
+      background-color: var(--blue-100);
+      color: var(--blue-900);
+    }
+
+    /* Menu toggle button visibility based on screen size */
+    @media (min-width: 768px) {
+      .menu-toggle {
+        display: none; /* Hide on desktop */
+      }
+    }
+
+    @media (max-width: 767px) {
+      .menu-toggle {
+        display: flex; /* Show on mobile */
+        margin-right: 12px;
+      }
       }
 
       .title {
@@ -492,7 +678,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background-color 0.2s;
         cursor: pointer;
         position: relative;
       }
@@ -502,11 +687,39 @@
       }
 
       .light-mode .icon-button {
-        background-color: var(--blue-100);
+        background-color: rgba(250, 204, 21, 0.2);
       }
 
       .light-mode .icon-button:hover {
-        background-color: var(--blue-200);
+        background-color: rgba(250, 204, 21, 0.3);
+      }
+
+      /* Improve sun icon appearance */
+      #sun-icon {
+        transition: all 0.3s ease;
+        transform-origin: center;
+        cursor: pointer;
+        stroke: #eab308;
+        display: block;
+        color: #eab308;
+      }
+
+      #sun-icon circle {
+        fill: rgba(252, 211, 77, 0.2);
+        transition: fill 0.3s ease;
+      }
+
+      /* Improve moon icon appearance */
+      #moon-icon {
+        transition: all 0.3s ease;
+        transform-origin: center;
+        cursor: pointer;
+        stroke: #3b82f6;
+        color: #3b82f6;
+      }
+
+      .light-mode #moon-icon {
+        color: #1d4ed8;
       }
 
       .notification-dot {
@@ -517,27 +730,73 @@
         position: absolute;
         top: -0.125rem;
         right: -0.125rem;
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: .7;
+          transform: scale(1.2);
+        }
       }
 
       .create-button {
-        padding: 0.5rem 1.25rem;
-        border-radius: 0.5rem;
-        background-color: var(--indigo-600);
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, var(--indigo-500), var(--indigo-600));
         color: var(--white);
         font-size: 0.875rem;
-        font-weight: 500;
-        transition: background-color 0.2s, box-shadow 0.2s;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1), 0 2px 4px -1px rgba(79, 70, 229, 0.06);
         border: none;
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .create-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: 0.5s;
       }
 
       .create-button:hover {
-        background-color: var(--indigo-700);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.05);
+      }
+
+      .create-button:hover::before {
+        left: 100%;
+      }
+
+      .create-button:active {
+        transform: translateY(0);
+      }
+
+      .create-button svg {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .create-button:hover svg {
+        transform: rotate(90deg);
       }
 
       /* Main content area */
@@ -693,96 +952,93 @@
 
       /* Post Card */
       .post-card {
-        background-color: rgba(30, 64, 175, 0.3);
-        border-radius: 0.75rem;
+        background-color: rgba(30, 64, 175, 0.08);
+        border-radius: 1rem;
         overflow: hidden;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         border: 1px solid var(--border-dark);
+        backdrop-filter: blur(8px);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: var(--shadow-md);
       }
 
       .light-mode .post-card {
-        background-color: rgba(255, 255, 255, 0.7);
+        background-color: rgba(255, 255, 255, 0.9);
         border: 1px solid var(--border-light);
+      }
+
+      .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
       }
 
       .post-header {
         display: flex;
         justify-content: space-between;
-        padding: 1rem;
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border-dark);
       }
 
-      .post-user {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
+      .light-mode .post-header {
+        border-bottom: 1px solid var(--border-light);
       }
 
       .post-avatar {
-        width: 2.5rem;
-        height: 2.5rem;
-        border-radius: 9999px;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 1rem;
         background: linear-gradient(135deg, var(--blue-500), var(--indigo-600));
         color: var(--white);
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 600;
-      }
-
-      .post-user-info {
-        display: flex;
-        flex-direction: column;
+        font-size: 1.125rem;
+        box-shadow: var(--shadow-sm);
       }
 
       .post-username {
         font-weight: 600;
-        color: var(--white);
-        font-size: 0.9375rem;
+        color: var(--text-dark);
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
       }
 
       .light-mode .post-username {
-        color: var(--blue-900);
+        color: var(--text-light);
       }
 
       .post-time {
-        font-size: 0.75rem;
-        color: var(--blue-300);
+        font-size: 0.875rem;
+        color: var(--text-muted-dark);
       }
 
       .light-mode .post-time {
-        color: var(--blue-600);
-      }
-
-      .post-more {
-        color: var(--blue-300);
-        cursor: pointer;
-      }
-
-      .light-mode .post-more {
-        color: var(--blue-600);
+        color: var(--text-muted-light);
       }
 
       .post-content {
-        padding: 0 1rem 1rem;
+        padding: 1.5rem;
       }
 
       .post-text {
-        color: var(--white);
-        margin-bottom: 1rem;
-        font-size: 0.9375rem;
-        line-height: 1.5;
+        color: var(--text-dark);
+        margin-bottom: 1.25rem;
+        font-size: 1rem;
+        line-height: 1.625;
       }
 
       .light-mode .post-text {
-        color: var(--blue-900);
+        color: var(--text-light);
       }
 
       .post-image {
         width: 100%;
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
+        border-radius: 0.75rem;
+        margin-bottom: 1.25rem;
         max-height: 400px;
         object-fit: cover;
+        box-shadow: var(--shadow-md);
       }
 
       .post-stats {
@@ -815,12 +1071,13 @@
 
       .post-actions {
         display: flex;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid var(--border-dark);
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--border-dark);
+        gap: 1rem;
       }
 
       .light-mode .post-actions {
-        border-bottom: 1px solid var(--border-light);
+        border-top: 1px solid var(--border-light);
       }
 
       .post-action {
@@ -829,29 +1086,94 @@
         justify-content: center;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.5rem 0;
-        color: var(--blue-300);
+        padding: 0.75rem;
+        color: var(--text-muted-dark);
         font-size: 0.875rem;
         font-weight: 500;
-        border-radius: 0.25rem;
+        border-radius: 0.75rem;
         cursor: pointer;
-        transition: background-color 0.2s;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        background: transparent;
+        border: none;
+        position: relative;
+        overflow: hidden;
       }
 
-      .light-mode .post-action {
-        color: var(--blue-600);
+    .post-action-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .post-action:hover .post-action-icon {
+      transform: scale(1.2);
+    }
+
+    .post-action.liked .post-action-icon {
+      color: var(--red-500);
+      fill: var(--red-500);
+      animation: heartBeat 0.8s ease;
+    }
+
+    @keyframes heartBeat {
+      0% {
+        transform: scale(1);
+      }
+      25% {
+        transform: scale(1.4);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      75% {
+        transform: scale(1.4);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .post-action:hover {
+      background-color: rgba(30, 64, 175, 0.1);
+    }
+
+    .light-mode .post-action:hover {
+      background-color: var(--blue-100);
+    }
+
+    .post-action.liked {
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    .light-mode .post-action.liked {
+      background-color: var(--red-100);
+    }
+
+    .post-action.liked .post-action-icon {
+        fill: var(--red-500);
       }
 
-      .post-action:hover {
-        background-color: rgba(30, 64, 175, 0.4);
-      }
+    .post-action.liked .post-action-icon {
+      animation: heartBeat 0.8s ease;
+    }
 
-      .light-mode .post-action:hover {
-        background-color: var(--blue-100);
+    @keyframes heartBeat {
+        0% {
+          transform: scale(1);
+        }
+      25% {
+        transform: scale(1.4);
+        }
+        50% {
+        transform: scale(1.2);
       }
-
-      .post-action.liked {
-        color: var(--red-500);
+      75% {
+          transform: scale(1.4);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
 
       /* Comments Section */
@@ -876,10 +1198,11 @@
       .comment-input-wrapper {
         flex: 1;
         display: flex;
-        background-color: rgba(30, 64, 175, 0.4);
+        background-color: rgba(30, 64, 175, 0.08);
         border: 1px solid var(--border-dark);
-        border-radius: 9999px;
-        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        padding: 0.5rem 1rem;
+        transition: all 0.2s ease;
       }
 
       .light-mode .comment-input-wrapper {
@@ -887,47 +1210,45 @@
         border: 1px solid var(--border-light);
       }
 
+      .comment-input-wrapper:focus-within {
+        border-color: var(--blue-500);
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+      }
+
       .comment-input {
         flex: 1;
         background-color: transparent;
         border: none;
         outline: none;
-        color: var(--white);
+        color: var(--text-dark);
         font-size: 0.875rem;
         padding: 0.5rem 0;
       }
 
       .light-mode .comment-input {
-        color: var(--blue-900);
+        color: var(--text-light);
       }
 
       .comment-input::placeholder {
-        color: var(--blue-300);
+        color: var(--text-muted-dark);
       }
 
       .light-mode .comment-input::placeholder {
-        color: var(--blue-600);
+        color: var(--text-muted-light);
       }
 
       .comment-submit {
         background: none;
         border: none;
-        color: var(--blue-400);
+        color: var(--blue-500);
         font-weight: 600;
         cursor: pointer;
         padding: 0 0.5rem;
-      }
-
-      .light-mode .comment-submit {
-        color: var(--blue-600);
+        transition: color 0.2s ease;
       }
 
       .comment-submit:hover {
-        color: var(--blue-300);
-      }
-
-      .light-mode .comment-submit:hover {
-        color: var(--blue-700);
+        color: var(--blue-600);
       }
 
       .comment {
@@ -949,22 +1270,22 @@
 
       .comment-username {
         font-weight: 600;
-        color: var(--white);
+        color: var(--text-dark);
         font-size: 0.875rem;
         margin-bottom: 0.25rem;
       }
 
       .light-mode .comment-username {
-        color: var(--blue-900);
+        color: var(--text-light);
       }
 
       .comment-text {
-        color: var(--blue-200);
+        color: var(--text-dark);
         font-size: 0.875rem;
       }
 
       .light-mode .comment-text {
-        color: var(--blue-800);
+        color: var(--text-light);
       }
 
       .comment-actions {
@@ -972,11 +1293,11 @@
         gap: 1rem;
         margin-top: 0.375rem;
         font-size: 0.75rem;
-        color: var(--blue-300);
+        color: var(--text-muted-dark);
       }
 
       .light-mode .comment-actions {
-        color: var(--blue-600);
+        color: var(--text-muted-light);
       }
 
       .comment-action {
@@ -989,14 +1310,14 @@
 
       .view-more-comments {
         font-size: 0.875rem;
-        color: var(--blue-300);
+        color: var(--text-muted-dark);
         padding: 0.5rem;
         text-align: center;
         cursor: pointer;
       }
 
       .light-mode .view-more-comments {
-        color: var(--blue-600);
+        color: var(--text-muted-light);
       }
 
       .view-more-comments:hover {
@@ -1013,90 +1334,328 @@
 
       /* Add spacing to compensate for the removed section */
       .channel-list {
-        margin-bottom: 2.5rem !important;
+      width: 100%;
+      padding: 0 1rem;
+      margin-bottom: 1.5rem;
+      }
+
+      /* Avatar animations */
+      .post-avatar, .comment-avatar {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .post-avatar:hover, .comment-avatar:hover {
+        transform: scale(1.05);
+      }
+
+      /* Comment animations */
+      .comment {
+        transition: transform 0.2s ease;
+      }
+
+      .comment:hover {
+        transform: translateX(4px);
+      }
+
+      .comment-action {
+        position: relative;
+        transition: color 0.2s ease;
+      }
+
+      .comment-action::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: currentColor;
+        transform: scaleX(0);
+        transition: transform 0.2s ease;
+        transform-origin: right;
+      }
+
+      .comment-action:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+    
+    /* Settings & Leave Button Icons */
+    .settings-button svg,
+    .leave-button svg,
+    .settings-button i,
+    .leave-button i {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      color: currentColor;
+    }
+    
+    /* Brand icon styling */
+    .brand-icon svg,
+    .brand-icon i {
+      width: 20px;
+      height: 20px;
+      color: rgba(199, 210, 254, 1); /* text-indigo-200 */
+    }
+
+    /* Add this CSS for hamburger menu responsiveness */
+    .menu-toggle {
+      display: block;
+    }
+
+    @media (min-width: 768px) {
+      .menu-toggle {
+        display: none;
       }
     }
+
+    /* Improved notification icon styling */
+    .notification-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--white);
+      position: relative;
+    }
+
+    .light-mode .notification-icon {
+      color: var(--blue-900);
+    }
+
+    /* Menu toggle button visibility based on screen size */
+    .menu-toggle {
+      display: none; /* Hide by default on desktop */
+    }
+
+    @media (max-width: 767px) {
+      .menu-toggle {
+        display: flex; /* Show only on mobile */
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        color: var(--text-color);
+      }
+    }
+
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+    }
+
+    @media (max-width: 767px) {
+      .sidebar-overlay.show {
+        display: block;
+      }
+    }
+
+    /* Sun sprite animation */
+    @keyframes sun-spin {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+      50% {
+        transform: rotate(180deg) scale(1.3);
+      }
+      100% {
+        transform: rotate(360deg) scale(1);
+      }
+    }
+
+    @keyframes sun-rays {
+      0% {
+        opacity: 0.7;
+        stroke-width: 2;
+      }
+      50% {
+        opacity: 1;
+        stroke-width: 3;
+        stroke: #f59e0b;
+      }
+      100% {
+        opacity: 0.7;
+        stroke-width: 2;
+      }
+    }
+
+    @keyframes sun-glow {
+      0% {
+        filter: drop-shadow(0 0 2px rgba(252, 211, 77, 0.5));
+      }
+      50% {
+        filter: drop-shadow(0 0 8px rgba(252, 211, 77, 0.8));
+      }
+      100% {
+        filter: drop-shadow(0 0 2px rgba(252, 211, 77, 0.5));
+      }
+    }
+
+    .sun-animation {
+      animation: sun-spin 1s ease-in-out, sun-glow 1s ease-in-out;
+      transform-origin: center;
+    }
+
+    .sun-ray-animation .sun-rays path {
+      animation: sun-rays 1s ease-in-out;
+    }
+
+    /* Dark mode button styling */
+    #dark-mode-button {
+      position: relative;
+      /* overflow: visible; */
+      /* background: none; 
+      border: none; */
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    /* Add or update these styles for the sun button hover effect */
+    #dark-mode-button:hover #sun-icon {
+      color: #fde047;
+      transform: scale(1.1) rotate(30deg);
+      transition: all 0.3s ease;
+    }
+
+    #dark-mode-button:hover #moon-icon {
+      color: #60a5fa;
+      transform: scale(1.1);
+      transition: all 0.3s ease;
+    }
+
+    /* Unified animation for the sun icon */
+    @keyframes sun-animation {  
+      0% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(180deg); }
+      100% { transform: scale(1) rotate(360deg); }
+    }
+
+    .sun-animation {
+      animation: sun-animation 1s ease-in-out;
+    }
+
+    .sun-ray-animation {
+      animation: sun-animation 1s ease-in-out;
+    }
+    /* Improved hover effects for sun/moon icons */
+#dark-mode-button:hover #sun-icon {
+  color: #fde047;
+  transform: scale(1.1) rotate(30deg);
+  transition: all 0.3s ease;
+}
+
+#dark-mode-button:hover #moon-icon {
+  color: #60a5fa;
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
   </style>
 </head>
 <body>
-  <input type="checkbox" id="dark-mode-toggle" onchange="document.body.classList.toggle('light-mode')">
-
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <!-- Sidebar -->
+<div class="sidebar" id="sidebar">
       <div class="sidebar-content">
+    <!-- App Brand -->
         <div class="app-brand">
           <div class="brand-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
+        <div class="logo-glow"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users text-indigo-200">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
           </div>
           <span class="brand-title">Campus Connect</span>
         </div>
 
-        <div class="sidebar-section-title">Channels</div>
-
+    <div class="sidebar-section-title">CHANNELS</div>
         <div class="channel-list">
-          <div class="channel">
-            <span># General</span>
+      <div class="channel" onclick="handleNavigation('/chat', event)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash">
+          <line x1="4" y1="9" x2="20" y2="9"></line>
+          <line x1="4" y1="15" x2="20" y2="15"></line>
+          <line x1="10" y1="3" x2="8" y2="21"></line>
+          <line x1="16" y1="3" x2="14" y2="21"></line>
+        </svg>
+        <span>General</span>
+      </div>
+      <div class="channel active" onclick="handleNavigation('/social-feed', event)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>Social Feed</span>
             <span class="channel-badge">5</span>
           </div>
-          <div class="channel active">
-            <span># Social Feed</span>
           </div>
         </div>
 
-        <!-- Upcoming Deadlines section completely removed -->
-
-        <div class="sidebar-section-title">Direct Messages</div>
-
-        <div class="dm-list">
-          <div class="dm-item">
-            <div class="avatar green">
-              <div class="status-indicator online"></div>
-            </div>
-            <span>Student Support</span>
-          </div>
-          <div class="dm-item">
-            <div class="avatar purple">
-              <div class="status-indicator offline"></div>
-            </div>
-            <span>Teaching Assistant</span>
-          </div>
-        </div>
+  <div class="sidebar-bottom">
+    <button class="settings-button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
+        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span>Settings</span>
+    </button>
+    <button class="leave-button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+      <span>Leave Chat</span>
+    </button>
+    
+    <!-- User Profile -->
+    <div class="user-profile" onclick="handleNavigation('/profile', event)">
+      <div class="avatar-container">
+        <div class="avatar bg-blue" id="user-avatar">
+          <!-- DiceBear avatar will be inserted here by updateUserAvatar() function -->
       </div>
-
-      <div class="user-profile">
-        <div class="user">
-          <div class="user-avatar">
-            <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-              <div style="width: 4px; height: 4px; border-radius: 9999px; background-color: #bfdbfe; position: absolute; left: 10px; top: 10px;"></div>
-              <div style="width: 4px; height: 4px; border-radius: 9999px; background-color: #bfdbfe; position: absolute; right: 10px; top: 10px;"></div>
-              <div style="width: 6px; height: 2px; border-radius: 9999px; background-color: #bfdbfe; position: absolute; bottom: 10px;"></div>
             </div>
+      <div class="user-info">
+        <span class="username">Anonymous</span>
           </div>
-          <span class="user-name">Anonymous</span>
         </div>
-        <svg id="settings-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-300 cursor-pointer">
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-          <circle cx="12" cy="12" r="3"></circle>
-        </svg>
       </div>
     </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <!-- Main Content Area -->
     <div class="main-content">
       <!-- Header -->
       <div class="header">
         <div class="header-title">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="md:hidden text-white">
+          <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="4" y1="12" x2="20" y2="12"></line>
             <line x1="4" y1="6" x2="20" y2="6"></line>
             <line x1="4" y1="18" x2="20" y2="18"></line>
           </svg>
+          </button>
           <div>
             <h1 class="title">Social Feed</h1>
             <p class="subtitle">Share moments with your campus community</p>
@@ -1107,26 +1666,32 @@
           <div class="search-bar">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-300">
               <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
             <input type="text" placeholder="Search posts..." class="search-input">
           </div>
+
+          <!-- Replace the dark mode button Lucide icons with inline SVGs -->
           <button id="dark-mode-button" class="icon-button">
-            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-300">
+            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-300">
               <circle cx="12" cy="12" r="4"></circle>
+              <g class="sun-rays">
               <path d="M12 2v2"></path>
               <path d="M12 20v2"></path>
-              <path d="m4.93 4.93 1.41 1.41"></path>
-              <path d="m17.66 17.66 1.41 1.41"></path>
+                <path d="M4.93 4.93l1.41 1.41"></path>
+                <path d="M17.66 17.66l1.41 1.41"></path>
               <path d="M2 12h2"></path>
               <path d="M20 12h2"></path>
-              <path d="m6.34 17.66-1.41 1.41"></path>
-              <path d="m19.07 4.93-1.41 1.41"></path>
+                <path d="M6.34 17.66l-1.41 1.41"></path>
+                <path d="M19.07 4.93l-1.41 1.41"></path>
+              </g>
             </svg>
-            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-700" style="display:none">
-              <path d="M12 3a6.364 6.364 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-700" style="display:none">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"></path>
             </svg>
           </button>
+          
+          <!-- Replace the notification bell Lucide icon with inline SVG -->
           <div style="position: relative;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
               <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
@@ -1136,15 +1701,8 @@
           </div>
           <button class="create-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 12h6"></path>
-              <path d="M12 9v6"></path>
-              <path d="M10 2h4"></path>
-              <path d="M4.93 10H2a1 1 0 0 0-1 1v0a1 1 0 0 0 1 1h2.93"></path>
-              <path d="M22 10h-2.93"></path>
-              <path d="M22 14h-2.93"></path>
-              <path d="M4.93 14H2"></path>
-              <path d="M12 22v-2"></path>
-              <path d="M10 12a2 2 0 1 0 4 0 2 2 0 1 0-4 0"></path>
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
             Create Story
           </button>
@@ -1157,10 +1715,7 @@
         <div class="create-post-box">
           <div class="create-post-header">
             <div class="create-post-avatar">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-              </svg>
+              <i data-lucide="user" class="text-white"></i>
             </div>
             <textarea class="create-post-input" placeholder="What's on your mind?" rows="2"></textarea>
           </div>
@@ -1229,22 +1784,24 @@
           </div>
           <div class="post-actions">
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
               Like
             </button>
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
               </svg>
               Comment
             </button>
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                <polyline points="16 6 12 2 8 6"></polyline>
-                <line x1="12" y1="2" x2="12" y2="15"></line>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
               </svg>
               Share
             </button>
@@ -1325,22 +1882,24 @@
           </div>
           <div class="post-actions">
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
               Like
             </button>
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
               </svg>
               Comment
             </button>
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                <polyline points="16 6 12 2 8 6"></polyline>
-                <line x1="12" y1="2" x2="12" y2="15"></line>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
               </svg>
               Share
             </button>
@@ -1421,22 +1980,24 @@
           </div>
           <div class="post-actions">
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
               Like
             </button>
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
               </svg>
               Comment
             </button>
             <button class="post-action">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                <polyline points="16 6 12 2 8 6"></polyline>
-                <line x1="12" y1="2" x2="12" y2="15"></line>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="post-action-icon">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
               </svg>
               Share
             </button>
@@ -1459,68 +2020,494 @@
   </div>
 
   <script>
-    // Toggle dark/light mode
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-    const darkModeButton = document.getElementById('dark-mode-button');
-    const sunIcon = document.getElementById('sun-icon');
-    const moonIcon = document.getElementById('moon-icon');
+document.addEventListener('DOMContentLoaded', function() {
+      // Debug Lucide loading
+      console.log('Lucide loaded:', typeof lucide !== 'undefined');
+      console.log('Checking for icons:', document.querySelectorAll('[data-lucide]').length);
+      
+      // Fix for settings and leave buttons
+      const settingsButton = document.querySelector('.settings-button');
+      if (settingsButton) {
+        console.log('Settings button found, adding event listener');
+        settingsButton.addEventListener('click', function() {
+          console.log('Settings button clicked');
+          window.location.href = '/settings';
+        });
+      }
 
-    darkModeButton.addEventListener('click', () => {
-      darkModeToggle.checked = !darkModeToggle.checked;
-      if (darkModeToggle.checked) {
+      // Fix for leave button
+      const leaveButton = document.querySelector('.leave-button');
+      if (leaveButton) {
+        console.log('Leave button found, adding event listener');
+        leaveButton.addEventListener('click', function() {
+          console.log('Leave button clicked');
+          window.location.href = '/logout';
+        });
+      }
+      
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Theme toggle functionality (updated with debug)
+  const darkModeButton = document.getElementById('dark-mode-button');
+  const sunIcon = document.getElementById('sun-icon');
+  const moonIcon = document.getElementById('moon-icon');
+  const body = document.body;
+
+  // Add debug console messages
+  console.log('Dark Mode Button Element:', darkModeButton);
+  console.log('Sun Icon Element:', sunIcon);
+  console.log('Moon Icon Element:', moonIcon);
+
+  // Check for saved theme preference or default to system preference
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  console.log('Saved Theme:', savedTheme);
+  console.log('System prefers dark mode:', prefersDarkMode);
+
+  // Function to set theme
+  function setTheme(theme) {
+    console.log('Setting theme to:', theme);
+    
+    if (theme === 'light') {
+      body.classList.add('light-mode');
+      if (sunIcon && moonIcon) {
         sunIcon.style.display = 'none';
         moonIcon.style.display = 'block';
-      } else {
+      }
+    } else {
+      body.classList.remove('light-mode');
+      if (sunIcon && moonIcon) {
         sunIcon.style.display = 'block';
         moonIcon.style.display = 'none';
       }
+    }
+  }
+
+  // Set initial theme based on saved preference or system preference
+  if (savedTheme === 'light') {
+    setTheme('light');
+  } else if (savedTheme === 'dark' || (prefersDarkMode && !savedTheme)) {
+    setTheme('dark');
+  } else {
+    // Default to light mode if no saved preference and system doesn't prefer dark
+    setTheme('light');
+  }
+
+  // Function to apply sun animation
+  function animateSun() {
+    if (!sunIcon) return;
+    
+    // Apply the animation class
+    sunIcon.classList.add('sun-animation');
+    
+    // Remove the animation class after the animation completes
+    setTimeout(() => {
+      sunIcon.classList.remove('sun-animation');
+    }, 1000);
+  }
+
+  // Enhanced toggle function to save preference in localStorage
+  if (darkModeButton) {
+    console.log('Adding click event listener to dark mode button');
+    
+    darkModeButton.addEventListener('click', () => {
+      console.log('Dark mode button clicked');
+      
+      const wasLightMode = body.classList.contains('light-mode');
+      console.log('Was in light mode:', wasLightMode);
+      
+      // Toggle light mode class
+      if (wasLightMode) {
+        setTheme('dark');
+        localStorage.setItem('theme', 'dark');
+        animateSun();
+      } else {
+        setTheme('light');
+        localStorage.setItem('theme', 'light');
+      }
     });
-
-    // Mobile menu toggle
-    const mobileMenuToggle = document.querySelector('.header-title svg');
-    const sidebar = document.querySelector('.sidebar');
-
-    mobileMenuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('mobile-visible');
-    });
-
-    // Like functionality
-    const likeButtons = document.querySelectorAll('.post-action:first-child');
-    likeButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        button.classList.toggle('liked');
-
-        // Get the SVG element
-        const svg = button.querySelector('svg');
-
-        if (button.classList.contains('liked')) {
-          button.style.color = '#ef4444'; // Red color for liked state
-          svg.setAttribute('fill', 'currentColor');
-        } else {
-          button.style.color = ''; // Reset to default color
-          svg.setAttribute('fill', 'none');
+    
+    // Add click listener specifically for the sun icon to trigger animation
+    if (sunIcon) {
+      sunIcon.addEventListener('click', (e) => {
+        if (!body.classList.contains('light-mode')) {
+          // Only animate if we're already in dark mode (sun is showing)
+          e.stopPropagation(); // Prevent triggering the parent button click
+          animateSun();
         }
-      });
-    });
-
-    // Add navigation functionality to channel items
-    const channelItems = document.querySelectorAll('.channel');
-    channelItems.forEach(channel => {
-      channel.addEventListener('click', () => {
-        const channelText = channel.textContent.trim();
-        if (channelText.includes('General')) {
-          window.location.href = '/chat';
-        } else if (channelText.includes('Social Feed')) {
-          window.location.href = '/social-feed';
-        }
-      });
-    });
-    const settingsIcon = document.getElementById('settings-icon');
-    if (settingsIcon) {
-      settingsIcon.addEventListener('click', () => {
-        window.location.href = '/settings';
       });
     }
+  }
+  
+      // Listen for system preference changes
+  if (window.matchMedia) {
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    prefersDarkScheme.addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme')) {
+        if (e.matches) {
+          // System switched to dark mode
+              body.classList.remove('light-mode');
+          if (sunIcon && moonIcon) {
+            sunIcon.style.display = 'block';
+            moonIcon.style.display = 'none';
+          }
+        } else {
+          // System switched to light mode
+              body.classList.add('light-mode');
+          if (sunIcon && moonIcon) {
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+          }
+        }
+      }
+    });
+  }
+
+      // Like button functionality (updated)
+      const likeButtons = document.querySelectorAll('.post-action:first-child');
+      likeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            button.classList.toggle('liked');
+
+          // Get the icon element
+          const icon = button.querySelector('svg.post-action-icon');
+          
+          if (button.classList.contains('liked')) {
+            button.style.color = '#ef4444'; // Red color for liked state
+            if (icon) {
+              icon.setAttribute('fill', 'currentColor');
+            }
+          } else {
+            button.style.color = ''; // Reset to default color
+            if (icon) {
+              icon.setAttribute('fill', 'none');
+            }
+          }
+        });
+      });
+
+      // Mobile Sidebar Functionality
+      const menuToggle = document.getElementById('menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      // Function to toggle sidebar
+      function toggleSidebar() {
+        if (!sidebar) return;
+        
+        const isOpening = !sidebar.classList.contains('open');
+        
+        if (isOpening) {
+          // Opening sidebar - save scroll position and fix body
+          if ('ontouchstart' in window) {
+            const scrollPosition = window.pageYOffset;
+            document.body.style.top = `-${scrollPosition}px`;
+          }
+        }
+        
+        sidebar.classList.toggle('open');
+        if (sidebarOverlay) {
+          sidebarOverlay.classList.toggle('show');
+        }
+        document.body.classList.toggle('sidebar-open');
+        
+        if (!isOpening) {
+          // Closing sidebar - restore scroll position
+          if ('ontouchstart' in window) {
+            const scrollY = document.body.style.top;
+            if (scrollY) {
+              document.body.style.top = '';
+              window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            }
+          }
+        }
+      }
+      
+      // Function to close sidebar
+      function closeSidebar() {
+        if (!sidebar) return;
+        
+        if (sidebar.classList.contains('open')) {
+          sidebar.classList.remove('open');
+          if (sidebarOverlay) {
+            sidebarOverlay.classList.remove('show');
+          }
+          document.body.classList.remove('sidebar-open');
+        }
+      }
+      
+      // Function to check if we're in mobile view
+      function isMobileView() {
+        return window.innerWidth < 768;
+      }
+      
+      // Toggle sidebar on menu button click
+      if (menuToggle) {
+        menuToggle.addEventListener('click', function(e) {
+          e.stopPropagation(); // Prevent event bubbling
+          toggleSidebar();
+        });
+      }
+      
+      // Close sidebar when clicking the overlay
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function(e) {
+          e.stopPropagation();
+          closeSidebar();
+        });
+        
+        // Also add touch event support for the overlay
+        sidebarOverlay.addEventListener('touchstart', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          closeSidebar();
+        }, { passive: false });
+      }
+      
+      // Close sidebar when clicking on main content in mobile view
+      const mainContent = document.querySelector('.main-content');
+      if (mainContent) {
+        mainContent.addEventListener('click', function(e) {
+          if (sidebar && sidebar.classList.contains('open') && isMobileView() && !e.target.closest('.sidebar') && !e.target.closest('#menu-toggle')) {
+            closeSidebar();
+          }
+        });
+        
+        // Close sidebar when touching the main content on mobile devices
+        mainContent.addEventListener('touchstart', function(e) {
+          if (sidebar && sidebar.classList.contains('open') && isMobileView() && !e.target.closest('.sidebar') && !e.target.closest('#menu-toggle')) {
+            e.preventDefault();
+            closeSidebar();
+          }
+        }, { passive: false });
+      }
+      
+      // Fix for iOS devices to ensure body stays fixed when sidebar is open
+      if ('ontouchstart' in window) {
+        let scrollPosition = 0;
+        
+        // Save scroll position when opening sidebar
+        if (menuToggle) {
+          menuToggle.addEventListener('click', function() {
+            if (!sidebar.classList.contains('open')) {
+              scrollPosition = window.pageYOffset;
+            }
+          });
+        }
+        
+        // Restore scroll position when closing sidebar
+        document.addEventListener('click', function() {
+          if (sidebar && !sidebar.classList.contains('open') && document.body.style.position === 'fixed') {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            window.scrollTo(0, scrollPosition);
+          }
+        });
+      }
+      
+      // Close sidebar when escape key is pressed
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+          closeSidebar();
+        }
+      });
+      
+      // Handle window resize
+      let previousWidth = window.innerWidth;
+      window.addEventListener('resize', function() {
+        const currentWidth = window.innerWidth;
+        
+        // Check if we're transitioning from mobile to desktop
+        if (previousWidth < 768 && currentWidth >= 768) {
+          if (sidebar && sidebar.classList.contains('open')) {
+            closeSidebar();
+          }
+        }
+        
+        previousWidth = currentWidth;
+      });
+      
+      // Handle sidebar button clicks
+      const sidebarButtons = document.querySelectorAll('.settings-button, .leave-button, .channel, .user-profile');
+      sidebarButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          if (isMobileView() && sidebar && sidebar.classList.contains('open')) {
+            closeSidebar();
+          }
+        });
+      });
+      
+      // Initialize sidebar state based on screen size
+      if (isMobileView() && sidebar) {
+        closeSidebar();
+      }
+    });
+
+    // Handle navigation
+    function handleNavigation(path, event) {
+      console.log(`Navigating to: ${path}`);
+      
+      // Close sidebar in mobile view
+      const sidebar = document.querySelector('.sidebar');
+      if (sidebar.classList.contains('open') && window.innerWidth < 768) {
+        sidebar.classList.remove('open');
+        document.querySelector('.sidebar-overlay').classList.remove('show');
+        document.body.classList.remove('sidebar-open');
+      }
+      
+      window.location.href = path;
+      if (event) {
+        event.preventDefault();
+      }
+    }
+
+    // Function to update user's avatar with Gravatar and selected color
+    function updateUserAvatar() {
+      const selectedGravatar = localStorage.getItem('selectedGravatar') || 'identicon';
+      const selectedColor = localStorage.getItem('selectedColor') || 'blue';
+      const userAvatars = document.querySelectorAll('.user-avatar, .create-post-avatar');
+      
+      userAvatars.forEach(avatar => {
+        // Reset classes and add selected color
+        avatar.className = avatar.className.replace(/\b(green|blue|purple|yellow|pink|teal|orange|red)\b/g, '');
+        avatar.classList.add(selectedColor);
+        
+        // Clear any previous content
+        avatar.innerHTML = '';
+        
+        // Create Gravatar image based on selected style
+        const hash = '00000000000000000000000000000000'; // Default hash
+        const gravatar = document.createElement('img');
+        gravatar.src = `https://www.gravatar.com/avatar/${hash}?d=${selectedGravatar.replace(/\d+$/, '')}&s=80`;
+        gravatar.alt = 'User Avatar';
+        gravatar.style.width = '100%';
+        gravatar.style.height = '100%';
+        gravatar.style.objectFit = 'cover';
+        
+        // Add image to avatar container
+        avatar.appendChild(gravatar);
+      });
+      
+      // Add CSS for avatar colors
+      const styleEl = document.getElementById('avatar-style');
+      if (!styleEl) {
+        const avatarStyles = document.createElement('style');
+        avatarStyles.id = 'avatar-style';
+        avatarStyles.textContent = `
+          .blue { background-color: #4285f4; }
+          .purple { background-color: #a142f4; }
+          .green { background-color: #34a853; }
+          .yellow { background-color: #fbbc05; }
+          .pink { background-color: #ea4c89; }
+          .teal { background-color: #20c997; }
+          .orange { background-color: #ff7a45; }
+          .red { background-color: #ea4335; }
+        `;
+        document.head.appendChild(avatarStyles);
+      }
+    }
+    
+    // Initialize avatars with selected color
+    updateUserAvatar();
+    
+    // Function to update all post and comment avatars in the feed
+    function updateFeedAvatars() {
+      const postAvatars = document.querySelectorAll('.post-avatar');
+      const commentAvatars = document.querySelectorAll('.comment-avatar');
+      
+      // Update post avatars
+      postAvatars.forEach(avatar => {
+        // Get sender initials or text from inside the avatar
+        const initials = avatar.textContent.trim();
+        if (!initials) return; // Skip if no initials
+        
+        // Generate a consistent hash based on the initials
+        const hash = Array.from(initials.toLowerCase())
+          .reduce((acc, char) => acc + char.charCodeAt(0).toString(16), '')
+          .substring(0, 32)
+          .padEnd(32, '0');
+        
+        // Generate a consistent color based on the initials
+        const colors = ['blue', 'purple', 'green', 'yellow', 'pink', 'teal', 'orange', 'red'];
+        const colorIndex = Array.from(initials.toLowerCase()).reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
+        const avatarColor = colors[colorIndex];
+        
+        // Store the initials for backup
+        const storedInitials = initials;
+        
+        // Clear previous content and styling
+        avatar.innerHTML = '';
+        avatar.removeAttribute('style');
+        avatar.className = avatar.className.replace(/\b(green|blue|purple|yellow|pink|teal|orange|red)\b/g, '');
+        avatar.classList.add('post-avatar', avatarColor);
+        
+        // Generate Gravatar for the post author
+        const gravatarTypes = ['identicon', 'monsterid', 'wavatar', 'retro', 'robohash', 'mp'];
+        const gravatarType = gravatarTypes[Math.abs(hash.charCodeAt(0)) % gravatarTypes.length];
+        
+        // Create and add the gravatar image
+        const gravatar = document.createElement('img');
+        gravatar.src = `https://www.gravatar.com/avatar/${hash}?d=${gravatarType}&s=50`;
+        gravatar.alt = 'User Avatar';
+        gravatar.style.width = '100%';
+        gravatar.style.height = '100%';
+        gravatar.style.objectFit = 'cover';
+        
+        avatar.appendChild(gravatar);
+        
+        // Add a data attribute with the initials for reference
+        avatar.setAttribute('data-initials', storedInitials);
+      });
+      
+      // Update comment avatars
+      commentAvatars.forEach(avatar => {
+        // Generate random initials if empty (since comment avatars often don't have text)
+        const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const randomInitial1 = randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+        const randomInitial2 = randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+        const initials = randomInitial1 + randomInitial2;
+        
+        // Generate a consistent hash based on the initials
+        const hash = Array.from(initials.toLowerCase())
+          .reduce((acc, char) => acc + char.charCodeAt(0).toString(16), '')
+          .substring(0, 32)
+          .padEnd(32, '0');
+        
+        // Generate a consistent color based on the initials
+        const colors = ['blue', 'purple', 'green', 'yellow', 'pink', 'teal', 'orange', 'red'];
+        const colorIndex = Array.from(initials.toLowerCase()).reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
+        const avatarColor = colors[colorIndex];
+        
+        // Clear previous content and styling
+        avatar.innerHTML = '';
+        avatar.removeAttribute('style');
+        avatar.className = avatar.className.replace(/\b(green|blue|purple|yellow|pink|teal|orange|red)\b/g, '');
+        avatar.classList.add('comment-avatar', avatarColor);
+        
+        // Generate Gravatar for the comment author
+        const gravatarTypes = ['identicon', 'monsterid', 'wavatar', 'retro', 'robohash', 'mp'];
+        const gravatarType = gravatarTypes[Math.abs(hash.charCodeAt(0)) % gravatarTypes.length];
+        
+        // Create and add the gravatar image
+        const gravatar = document.createElement('img');
+        gravatar.src = `https://www.gravatar.com/avatar/${hash}?d=${gravatarType}&s=40`;
+        gravatar.alt = 'User Avatar';
+        gravatar.style.width = '100%';
+        gravatar.style.height = '100%';
+        gravatar.style.objectFit = 'cover';
+        
+        avatar.appendChild(gravatar);
+        
+        // Add a data attribute with the initials for reference
+        avatar.setAttribute('data-initials', initials);
+      });
+    }
+    
+    // Initialize feed avatars
+    updateFeedAvatars();
   </script>
 </body>
 </html>

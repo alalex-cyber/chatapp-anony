@@ -3,9 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anonymous Settings | Campus Connect</title>
+  <title>Settings | Campus Connect</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.244.0/lucide.min.js"></script>
   <style>
-    /* Reset and base styles - same as existing templates */
+    /* Base styles */
+    :root {
+      /* Colors - Dark Theme */
+      --bg-primary: #1e293b;
+      --bg-secondary: #0f172a;
+      --bg-tertiary: #1e293b;
+      --bg-highlight: rgba(59, 130, 246, 0.1);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: #334155;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --accent-green: #22c55e;
+      --accent-yellow: #eab308;
+      --accent-pink: #ec4899;
+      --accent-teal: #14b8a6;
+      --accent-orange: #f97316;
+      --accent-red: #ef4444;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,755 +35,207 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
 
-    :root {
-      --bg-gradient-dark: linear-gradient(to bottom right, #172554, #312e81, #4c1d95);
-      --bg-gradient-light: linear-gradient(to bottom right, #eff6ff, #e0e7ff, #f5f3ff);
-      --primary-dark: #172554;
-      --primary-light: #ffffff;
-      --blue-950: #172554;
-      --blue-900: #1e3a8a;
-      --blue-800: #1e40af;
-      --blue-700: #1d4ed8;
-      --blue-600: #2563eb;
-      --blue-500: #3b82f6;
-      --blue-400: #60a5fa;
-      --blue-300: #93c5fd;
-      --blue-200: #bfdbfe;
-      --blue-100: #dbeafe;
-      --blue-50: #eff6ff;
-      --indigo-900: #312e81;
-      --indigo-600: #4f46e5;
-      --indigo-500: #6366f1;
-      --indigo-100: #e0e7ff;
-      --green-500: #22c55e;
-      --green-600: #16a34a;
-      --green-700: #15803d;
-      --green-300: #86efac;
-      --red-500: #ef4444;
-      --red-600: #dc2626;
-      --yellow-300: #fde047;
-      --yellow-400: #facc15;
-      --yellow-500: #eab308;
-      --yellow-600: #ca8a04;
-      --yellow-700: #a16207;
-      --yellow-800: #854d0e;
-      --orange-500: #f97316;
-      --purple-500: #a855f7;
-      --pink-500: #ec4899;
-      --teal-500: #14b8a6;
-      --border-dark: rgba(30, 64, 175, 0.3);
-      --border-light: #e5e7eb;
-      --white: #4f46e5;
-      --text-dark: #ffffff;
-      --text-light: #172554;
-      --text-muted-dark: #93c5fd;
-      --text-muted-light: #1d4ed8;
-    }
-
     body {
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      background: var(--bg-gradient-dark);
-      color: var(--text-dark);
-    }
-
-    body.light-mode {
-      background: var(--bg-gradient-light);
-      color: var(--text-light);
-    }
-
-    /* Main layout */
-    .flex {
-      display: flex;
-    }
-
-    .h-screen {
-      height: 100vh;
-    }
-
-    /* Sidebar styles - same as existing templates */
-    .sidebar {
-      display: flex;
-      width: 16rem;
-      flex-direction: column;
-      background-color: rgba(23, 37, 84, 0.7);
-      backdrop-filter: blur(8px);
-      border-right: 1px solid var(--border-dark);
-      display: none;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
-    }
-
-    .light-mode .sidebar {
-      background-color: rgba(255, 255, 255, 0.9);
-      border-right: 1px solid var(--border-light);
-    }
-
-    @media (min-width: 768px) {
-      .sidebar {
-        display: flex;
-      }
-    }
-
-    /* Sidebar content styles - abbreviated for brevity */
-    .sidebar-content {
-      padding: 1rem;
-    }
-
-    .app-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 2rem;
-      padding: 0.75rem 0.5rem;
-      background-color: rgba(79, 70, 229, 0.5);
-      border-radius: 0.75rem;
-    }
-
-    .light-mode .app-brand {
-      background-color: var(--indigo-100);
-    }
-
-    .brand-icon {
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: 9999px;
-      background-color: var(--indigo-600);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .light-mode .brand-icon {
-      background-color: var(--indigo-500);
-    }
-
-    .brand-title {
-      font-size: 1.125rem;
-      font-weight: 700;
-      color: var(--white);
-    }
-
-    .light-mode .brand-title {
-      color: var(--indigo-900);
-    }
-
-    /* Main content */
-    .main-content {
-      flex: 1;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      max-height: 100vh;
-      overflow: hidden;
+      align-items: center;
+      padding: 1.5rem;
     }
 
     /* Header */
-    .header {
-      display: flex;
+    .settings-header {
+      width: 100%;
+      max-width: 800px;
+        display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.25rem;
-      background-color: rgba(23, 37, 84, 0.5);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border-dark);
-    }
-
-    .light-mode .header {
-      background-color: rgba(255, 255, 255, 0.7);
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .header-title {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--white);
-    }
-
-    .light-mode .title {
-      color: var(--blue-950);
-    }
-
-    .subtitle {
-      color: var(--blue-300);
-      font-size: 0.875rem;
-    }
-
-    .light-mode .subtitle {
-      color: var(--blue-700);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .icon-button {
-      width: 2.25rem;
-      height: 2.25rem;
-      background-color: rgba(30, 64, 175, 0.7);
-      border-radius: 9999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.2s;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .icon-button:hover {
-      background-color: var(--blue-800);
-    }
-
-    .light-mode .icon-button {
-      background-color: var(--blue-100);
-    }
-
-    .light-mode .icon-button:hover {
-      background-color: var(--blue-200);
-    }
-
-    /* Settings specific styles */
-    .settings-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1.5rem;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
-    }
-
-    .settings-container::-webkit-scrollbar {
-      width: 6px;
-      background-color: transparent;
-    }
-
-    .settings-container::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .settings-container::-webkit-scrollbar-thumb {
-      background-color: rgba(59, 130, 246, 0.3);
-      border-radius: 20px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .settings-container:hover::-webkit-scrollbar-thumb {
-      opacity: 1;
-      background-color: rgba(59, 130, 246, 0.5);
-    }
-
-    .light-mode .settings-container::-webkit-scrollbar-thumb {
-      background-color: rgba(37, 99, 235, 0.2);
-    }
-
-    .light-mode .settings-container:hover::-webkit-scrollbar-thumb {
-      background-color: rgba(37, 99, 235, 0.4);
-    }
-
-    .settings-wrapper {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .settings-section {
-      background-color: rgba(30, 64, 175, 0.3);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
       margin-bottom: 1.5rem;
-      border: 1px solid var(--border-dark);
-    }
-
-    .light-mode .settings-section {
-      background-color: rgba(255, 255, 255, 0.7);
-      border: 1px solid var(--border-light);
-    }
-
-    .settings-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border-dark);
-    }
-
-    .light-mode .settings-header {
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .settings-icon {
-      width: 2rem;
-      height: 2rem;
-      border-radius: 9999px;
-      background-color: rgba(79, 70, 229, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .light-mode .settings-icon {
-      background-color: var(--indigo-100);
     }
 
     .settings-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--white);
+      font-size: 2rem;
+      font-weight: 700;
     }
 
-    .light-mode .settings-title {
-      color: var(--blue-900);
-    }
-
-    .settings-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 0;
-      border-bottom: 1px solid rgba(30, 64, 175, 0.2);
-    }
-
-    .light-mode .settings-row {
-      border-bottom: 1px solid rgba(219, 234, 254, 0.5);
-    }
-
-    .settings-row:last-child {
-      border-bottom: none;
-    }
-
-    .settings-label {
-      font-size: 0.9375rem;
-      color: var(--blue-200);
-    }
-
-    .light-mode .settings-label {
-      color: var(--blue-800);
-    }
-
-    .settings-description {
-      font-size: 0.75rem;
-      color: var(--blue-300);
+    .settings-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
       margin-top: 0.25rem;
     }
 
-    .light-mode .settings-description {
-      color: var(--blue-600);
-    }
-
-    .settings-control {
-      display: flex;
-      align-items: center;
-    }
-
-    /* Switch toggle */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 3rem;
-      height: 1.5rem;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(30, 64, 175, 0.3);
-      -webkit-transition: .4s;
-      transition: .4s;
-      border-radius: 34px;
-    }
-
-    .light-mode .slider {
-      background-color: var(--blue-200);
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 1.125rem;
-      width: 1.125rem;
-      left: 0.188rem;
-      bottom: 0.188rem;
-      background-color: white;
-      -webkit-transition: .4s;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: var(--indigo-600);
-    }
-
-    input:focus + .slider {
-      box-shadow: 0 0 1px var(--indigo-600);
-    }
-
-    input:checked + .slider:before {
-      -webkit-transform: translateX(1.5rem);
-      -ms-transform: translateX(1.5rem);
-      transform: translateX(1.5rem);
-    }
-
-    /* Select styles */
-    .settings-select {
-      background-color: rgba(30, 64, 175, 0.3);
-      border: 1px solid var(--border-dark);
-      border-radius: 0.375rem;
-      padding: 0.5rem;
-      color: var(--white);
-      font-size: 0.875rem;
-      min-width: 10rem;
-      outline: none;
-    }
-
-    .light-mode .settings-select {
-      background-color: var(--white);
-      border: 1px solid var(--border-light);
-      color: var(--blue-900);
-    }
-
-    .settings-select option {
-      background-color: var(--blue-950);
-      color: var(--white);
-    }
-
-    .light-mode .settings-select option {
-      background-color: var(--white);
-      color: var(--blue-900);
-    }
-
-    /* Avatar selector styles */
-    .avatar-options {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-
-    .avatar-option {
-      width: 3rem;
-      height: 3rem;
-      border-radius: 9999px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+    .back-button {
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
+      padding: 0.5rem 1rem;
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
     }
 
+    .back-button:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .back-button svg {
+      margin-right: 0.5rem;
+    }
+
+    /* Settings sections */
+    .settings-container {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .settings-card {
+      background-color: var(--bg-primary);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.5rem;
+      background-color: rgba(59, 130, 246, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.75rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Settings rows */
+    .settings-row {
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .settings-label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .settings-description {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Avatar section */
+    .avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+
+    @media (max-width: 768px) {
+      .avatar-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .avatar-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .avatar-option {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  overflow: hidden;
+  background-color: var(--bg-tertiary);
+  /* Ensure the avatar is clickable with proper z-index */
+  z-index: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
     .avatar-option:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .avatar-option.selected {
-      border: 2px solid var(--indigo-500);
-      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+      border-color: var(--accent-blue);
+      position: relative;
     }
 
-    .avatar-blue {
-      background: linear-gradient(to bottom right, #60a5fa, #2563eb);
-    }
-
-    .avatar-pink {
-      background: linear-gradient(to bottom right, #f472b6, #db2777);
-    }
-
-    .avatar-yellow {
-      background: linear-gradient(to bottom right, #facc15, #ca8a04);
-    }
-
-    .avatar-green {
-      background: linear-gradient(to bottom right, #4ade80, #16a34a);
-    }
-
-    .avatar-purple {
-      background: linear-gradient(to bottom right, #a855f7, #7e22ce);
-    }
-
-    .avatar-orange {
-      background: linear-gradient(to bottom right, #fb923c, #ea580c);
-    }
-
-    .avatar-teal {
-      background: linear-gradient(to bottom right, #2dd4bf, #0d9488);
-    }
-
-    .avatar-red {
-      background: linear-gradient(to bottom right, #f87171, #dc2626);
-    }
-
-    .avatar-face {
+    .avatar-option.selected::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      right: -8px;
       width: 1.5rem;
       height: 1.5rem;
-      border-radius: 9999px;
-      position: absolute;
-    }
-
-    .avatar-face.blue {
-      background-color: var(--blue-800);
-    }
-
-    .avatar-face.pink {
-      background-color: #be185d;
-    }
-
-    .avatar-face.yellow {
-      background-color: var(--yellow-800);
-    }
-
-    .avatar-face.green {
-      background-color: var(--green-700);
-    }
-
-    .avatar-face.purple {
-      background-color: #6b21a8;
-    }
-
-    .avatar-face.orange {
-      background-color: #c2410c;
-    }
-
-    .avatar-face.teal {
-      background-color: #0f766e;
-    }
-
-    .avatar-face.red {
-      background-color: #b91c1c;
-    }
-
-    .avatar-dot {
-      width: 0.375rem;
-      height: 0.375rem;
-      border-radius: 9999px;
-      position: absolute;
-    }
-
-    .avatar-dot.left {
-      left: 0.5rem;
-      top: 0.5rem;
-    }
-
-    .avatar-dot.right {
-      right: 0.5rem;
-      top: 0.5rem;
-    }
-
-    .avatar-dot.blue {
-      background-color: var(--blue-300);
-    }
-
-    .avatar-dot.pink {
-      background-color: #fbcfe8;
-    }
-
-    .avatar-dot.yellow {
-      background-color: var(--yellow-300);
-    }
-
-    .avatar-dot.green {
-      background-color: var(--green-300);
-    }
-
-    .avatar-dot.purple {
-      background-color: #e9d5ff;
-    }
-
-    .avatar-dot.orange {
-      background-color: #fed7aa;
-    }
-
-    .avatar-dot.teal {
-      background-color: #99f6e4;
-    }
-
-    .avatar-dot.red {
-      background-color: #fecaca;
-    }
-
-    .avatar-mouth {
-      width: 0.5rem;
-      height: 0.125rem;
-      border-radius: 9999px;
-      position: absolute;
-      bottom: 0.5rem;
-      transform: translateX(0.125rem);
-    }
-
-    .avatar-mouth.blue {
-      background-color: var(--blue-300);
-    }
-
-    .avatar-mouth.pink {
-      background-color: #fbcfe8;
-    }
-
-    .avatar-mouth.yellow {
-      background-color: var(--yellow-300);
-    }
-
-    .avatar-mouth.green {
-      background-color: var(--green-300);
-    }
-
-    .avatar-mouth.purple {
-      background-color: #e9d5ff;
-    }
-
-    .avatar-mouth.orange {
-      background-color: #fed7aa;
-    }
-
-    .avatar-mouth.teal {
-      background-color: #99f6e4;
-    }
-
-    .avatar-mouth.red {
-      background-color: #fecaca;
-    }
-
-    /* Button styles */
-    .button {
-      padding: 0.5rem 1rem;
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s, box-shadow 0.2s;
-      border: none;
-    }
-
-    .button-primary {
-      background-color: var(--indigo-600);
-      color: var(--white);
-    }
-
-    .button-primary:hover {
-      background-color: var(--indigo-700);
-    }
-
-    .button-secondary {
-      background-color: rgba(30, 64, 175, 0.3);
-      color: var(--blue-300);
-      border: 1px solid var(--border-dark);
-    }
-
-    .light-mode .button-secondary {
-      background-color: var(--blue-50);
-      color: var(--blue-700);
-      border: 1px solid var(--border-light);
-    }
-
-    .button-secondary:hover {
-      background-color: rgba(30, 64, 175, 0.4);
-    }
-
-    .light-mode .button-secondary:hover {
-      background-color: var(--blue-100);
-    }
-
-    .button-danger {
-      background-color: var(--red-500);
-      color: var(--white);
-    }
-
-    .button-danger:hover {
-      background-color: var(--red-600);
-    }
-
-    .settings-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
-    }
-
-    .text-danger {
-      color: var(--red-500);
-    }
-
-    /* Range slider styles */
-    .range-slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 0.5rem;
-      border-radius: 0.25rem;
-      background: rgba(30, 64, 175, 0.3);
-      outline: none;
-    }
-
-    .light-mode .range-slider {
-      background: var(--blue-200);
-    }
-
-    .range-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 1.25rem;
-      height: 1.25rem;
+      background-color: var(--accent-blue);
       border-radius: 50%;
-      background: var(--indigo-600);
-      cursor: pointer;
-    }
-
-    .range-slider::-moz-range-thumb {
-      width: 1.25rem;
-      height: 1.25rem;
-      border-radius: 50%;
-      background: var(--indigo-600);
-      cursor: pointer;
-      border: none;
-    }
-
-    .range-value {
-      margin-left: 0.75rem;
-      min-width: 2rem;
-      text-align: center;
-      color: var(--blue-300);
-      font-size: 0.875rem;
-    }
-
-    .light-mode .range-value {
-      color: var(--blue-700);
-    }
-
-    .range-container {
       display: flex;
       align-items: center;
-      width: 12rem;
+      justify-content: center;
+      box-shadow: 0 0 0 2px var(--bg-primary);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 12px;
     }
 
+    .avatar-option img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  pointer-events: none; /* This ensures clicks go to the parent div */
+}
+
+    /* Color selection */
     .color-options {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      flex-wrap: wrap;
     }
 
     .color-option {
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 0.25rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: all 0.2s;
+      border: 2px solid transparent;
     }
 
     .color-option:hover {
@@ -769,165 +243,476 @@
     }
 
     .color-option.selected {
-      border: 2px solid var(--white);
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+      border-color: var(--text-primary);
+      transform: scale(1.1);
+      box-shadow: 0 0 0 2px var(--bg-primary);
     }
 
-    .color-blue {
-      background-color: var(--blue-600);
+    /* Form controls */
+    .select-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 15rem;
     }
 
-    .color-purple {
-      background-color: var(--purple-500);
+    .select-control {
+      width: 100%;
+      padding: 0.625rem 1rem;
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      appearance: none;
+      cursor: pointer;
     }
 
-    .color-pink {
-      background-color: var(--pink-500);
+    .select-wrapper::after {
+      content: '';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0.75rem;
+      height: 0.75rem;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      pointer-events: none;
     }
 
-    .color-teal {
-      background-color: var(--teal-500);
+    /* Toggle switch */
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .color-green {
-      background-color: var(--green-500);
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 3.25rem;
+      height: 1.75rem;
+      flex-shrink: 0;
     }
 
-    .color-orange {
-      background-color: var(--orange-500);
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border-color);
+      border-radius: 1.75rem;
+      transition: 0.3s;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 1.25rem;
+      width: 1.25rem;
+      left: 0.25rem;
+      bottom: 0.25rem;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--accent-blue);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(1.5rem);
+    }
+
+    /* Action buttons */
+    .action-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .button {
+      padding: 0.625rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .button-secondary {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .button-secondary:hover {
+      background-color: var(--border-color);
+    }
+
+    .button-primary {
+      background-color: var(--accent-blue);
+      color: white;
+    }
+
+    .button-primary:hover {
+      background-color: #2563eb;
+    }
+
+    /* Colors */
+    .bg-blue { background-color: var(--accent-blue); }
+    .bg-purple { background-color: var(--accent-purple); }
+    .bg-green { background-color: var(--accent-green); }
+    .bg-yellow { background-color: var(--accent-yellow); }
+    .bg-pink { background-color: var(--accent-pink); }
+    .bg-teal { background-color: var(--accent-teal); }
+    .bg-orange { background-color: var(--accent-orange); }
+    .bg-red { background-color: var(--accent-red); }
+
+    /* Toast notifications */
+    .settings-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background-color: var(--accent-blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+      transform: translateY(100%);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .settings-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      display: flex;
+    }
+
+    /* Multi-row layout for settings with buttons */
+    .multi-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Danger button */
+    .button-danger {
+      background-color: var(--accent-red);
+      color: white;
+    }
+
+    .button-danger:hover {
+      background-color: #dc2626;
+    }
+
+    /* Light mode */
+    body.light-mode {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --bg-highlight: rgba(59, 130, 246, 0.05);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+    }
+
+    .avatar-pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .avatar-page {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .avatar-page:hover {
+      background-color: var(--border-color);
+    }
+
+    .avatar-page.active {
+      background-color: var(--accent-blue);
+      color: white;
+    }
+
+    .avatar-search {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .avatar-search-input {
+      flex: 1;
+      padding: 0.625rem 1rem;
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .avatar-search-input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+
+    /* Avatar category tabs */
+    .avatar-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .avatar-category {
+      padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+      font-size: 0.875rem;
+      cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+    .avatar-category:hover {
+      background-color: var(--border-color);
+    }
+
+    .avatar-category.active {
+      background-color: var(--accent-blue);
+      color: white;
+    }
+
+    /* Modal styles for password change */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background-color: var(--bg-primary);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
     }
   </style>
 </head>
-<body>
-  <input type="checkbox" id="dark-mode-toggle" onchange="document.body.classList.toggle('light-mode')">
-
-  <div class="flex h-screen">
-    <!-- Main Content -->
-    <div class="main-content" style="width: 100%;">
-      <!-- Header -->
-      <div class="header">
-        <div class="header-title">
+<body id="body">
+  <div class="settings-header">
           <div>
-            <h1 class="title">Settings</h1>
-            <p class="subtitle">Customize your anonymous experience</p>
+      <h1 class="settings-title">Settings</h1>
+      <p class="settings-subtitle">Customize your anonymous experience</p>
           </div>
-        </div>
-
-        <div class="header-actions">
-          <button id="dark-mode-button" class="icon-button">
-            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-300">
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2"></path>
-              <path d="M12 20v2"></path>
-              <path d="m4.93 4.93 1.41 1.41"></path>
-              <path d="m17.66 17.66 1.41 1.41"></path>
-              <path d="M2 12h2"></path>
-              <path d="M20 12h2"></path>
-              <path d="m6.34 17.66-1.41 1.41"></path>
-              <path d="m19.07 4.93-1.41 1.41"></path>
-            </svg>
-            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-700" style="display:none">
-              <path d="M12 3a6.364 6.364 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-            </svg>
-          </button>
-          <button id="back-button" class="button button-secondary">
+    <button class="back-button" id="back-to-chat" onclick="window.location.href='/chat';">
+      <i data-lucide="arrow-left"></i>
             Back to Chat
           </button>
+      </div>
+
+      <div class="settings-container">
+          <!-- Appearance Section -->
+    <div class="settings-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <i data-lucide="palette"></i>
+              </div>
+        <h2 class="section-title">Appearance</h2>
+            </div>
+
+      <!-- Avatar Selection -->
+            <div class="settings-row">
+        <label class="settings-label">Avatar</label>
+        <p class="settings-description">Choose your anonymous profile picture</p>
+        
+        <div class="avatar-categories">
+          <div class="avatar-category active" data-category="all">All</div>
+          <div class="avatar-category" data-category="animals">Animals</div>
+          <div class="avatar-category" data-category="people">People</div>
+          <div class="avatar-category" data-category="characters">Characters</div>
+          <div class="avatar-category" data-category="objects">Objects</div>
+              </div>
+        
+        <div class="avatar-search">
+          <input type="text" class="avatar-search-input" placeholder="Search avatars..." id="avatar-search">
+                    </div>
+        
+        <div class="avatar-grid" id="avatar-grid">
+          <!-- First row - People -->
+          <div class="avatar-option selected" data-avatar="avatar-1" data-category="people">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Felix" alt="Avatar option">
+                  </div>
+          <div class="avatar-option" data-avatar="avatar-2" data-category="people">
+            <img src="https://api.dicebear.com/7.x/lorelei/svg?seed=Jasper" alt="Avatar option">
+                    </div>
+          <div class="avatar-option" data-avatar="avatar-3" data-category="people">
+            <img src="https://api.dicebear.com/7.x/micah/svg?seed=Aneka" alt="Avatar option">
+                  </div>
+          <div class="avatar-option" data-avatar="avatar-4" data-category="people">
+            <img src="https://api.dicebear.com/7.x/fun-emoji/svg?seed=Dusty" alt="Avatar option">
+                    </div>
+          <div class="avatar-option" data-avatar="avatar-5" data-category="animals">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Koda" alt="Avatar option">
+                  </div>
+          <div class="avatar-option" data-avatar="avatar-6" data-category="characters">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Harper" alt="Avatar option">
+                    </div>
+          
+          <!-- Second row - Animals and characters -->
+          <div class="avatar-option" data-avatar="avatar-7" data-category="animals">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=Felix" alt="Avatar option">
+                  </div>
+          <div class="avatar-option" data-avatar="avatar-8" data-category="animals">
+            <img src="https://api.dicebear.com/7.x/croodles/svg?seed=Indie" alt="Avatar option">
+                    </div>
+          <div class="avatar-option" data-avatar="avatar-9" data-category="characters">
+            <img src="https://api.dicebear.com/7.x/micah/svg?seed=Jasper" alt="Avatar option">
+                  </div>
+          <div class="avatar-option" data-avatar="avatar-10" data-category="objects">
+            <img src="https://api.dicebear.com/7.x/open-peeps/svg?seed=Lucy" alt="Avatar option">
+                    </div>
+          <div class="avatar-option" data-avatar="avatar-11" data-category="characters">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Max" alt="Avatar option">
+                  </div>
+          <div class="avatar-option" data-avatar="avatar-12" data-category="people">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Garfield" alt="Avatar option">
+                    </div>
+          
+          <!-- Third row - Mix -->
+          <div class="avatar-option" data-avatar="avatar-13" data-category="characters">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=Bailey" alt="Avatar option">
+                  </div>
+          <div class="avatar-option" data-avatar="avatar-14" data-category="animals">
+            <img src="https://api.dicebear.com/7.x/croodles/svg?seed=Cali" alt="Avatar option">
+                    </div>
+          <div class="avatar-option" data-avatar="avatar-15" data-category="people">
+            <img src="https://api.dicebear.com/7.x/fun-emoji/svg?seed=Indie" alt="Avatar option">
+                  </div>
+          <div class="avatar-option" data-avatar="avatar-16" data-category="objects">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Luna" alt="Avatar option">
+                </div>
+          <div class="avatar-option" data-avatar="avatar-17" data-category="characters">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Nova" alt="Avatar option">
+          </div>
+          <div class="avatar-option" data-avatar="avatar-18" data-category="people">
+            <img src="https://api.dicebear.com/7.x/lorelei/svg?seed=Oscar" alt="Avatar option">
+              </div>
+            </div>
+
+        <div class="avatar-pagination">
+          <div class="avatar-page active">1</div>
+          <div class="avatar-page">2</div>
+          <div class="avatar-page">3</div>
+          <div class="avatar-page">4</div>
         </div>
       </div>
 
-      <!-- Settings Content -->
-      <div class="settings-container">
-        <div class="settings-wrapper">
-          <!-- Appearance Section -->
-          <div class="settings-section">
-            <div class="settings-header">
-              <div class="settings-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <circle cx="12" cy="12" r="4"></circle>
-                  <line x1="21.17" x2="12" y1="8" y2="8"></line>
-                  <line x1="3.95" x2="8.54" y1="6.06" y2="14"></line>
-                  <line x1="10.88" x2="15.46" y1="21.94" y2="14"></line>
-                </svg>
-              </div>
-              <div class="settings-title">Appearance</div>
-            </div>
-
+      <!-- Color Selection -->
             <div class="settings-row">
-              <div>
-                <div class="settings-label">Avatar</div>
-                <div class="settings-description">Choose your anonymous profile picture</div>
+        <label class="settings-label">Avatar Background</label>
+        <p class="settings-description">Choose a color for your avatar background</p>
+        
+        <div class="color-options">
+          <div class="color-option bg-blue selected" data-color="blue"></div>
+          <div class="color-option bg-purple" data-color="purple"></div>
+          <div class="color-option bg-green" data-color="green"></div>
+          <div class="color-option bg-yellow" data-color="yellow"></div>
+          <div class="color-option bg-pink" data-color="pink"></div>
+          <div class="color-option bg-teal" data-color="teal"></div>
+          <div class="color-option bg-orange" data-color="orange"></div>
+          <div class="color-option bg-red" data-color="red"></div>
               </div>
-              <div class="settings-control">
-                <div class="avatar-options">
-                  <div class="avatar-option avatar-blue selected">
-                    <div class="avatar-face blue">
-                      <div class="avatar-dot blue left"></div>
-                      <div class="avatar-dot blue right"></div>
-                      <div class="avatar-mouth blue"></div>
-                    </div>
-                  </div>
-                  <div class="avatar-option avatar-pink">
-                    <div class="avatar-face pink">
-                      <div class="avatar-dot pink left"></div>
-                      <div class="avatar-dot pink right"></div>
-                      <div class="avatar-mouth pink"></div>
-                    </div>
-                  </div>
-                  <div class="avatar-option avatar-yellow">
-                    <div class="avatar-face yellow">
-                      <div class="avatar-dot yellow left"></div>
-                      <div class="avatar-dot yellow right"></div>
-                      <div class="avatar-mouth yellow"></div>
-                    </div>
-                  </div>
-                  <div class="avatar-option avatar-green">
-                    <div class="avatar-face green">
-                      <div class="avatar-dot green left"></div>
-                      <div class="avatar-dot green right"></div>
-                      <div class="avatar-mouth green"></div>
-                    </div>
-                  </div>
-                  <div class="avatar-option avatar-purple">
-                    <div class="avatar-face purple">
-                      <div class="avatar-dot purple left"></div>
-                      <div class="avatar-dot purple right"></div>
-                      <div class="avatar-mouth purple"></div>
-                    </div>
-                  </div>
-                  <div class="avatar-option avatar-orange">
-                    <div class="avatar-face orange">
-                      <div class="avatar-dot orange left"></div>
-                      <div class="avatar-dot orange right"></div>
-                      <div class="avatar-mouth orange"></div>
-                    </div>
-                  </div>
-                  <div class="avatar-option avatar-teal">
-                    <div class="avatar-face teal">
-                      <div class="avatar-dot teal left"></div>
-                      <div class="avatar-dot teal right"></div>
-                      <div class="avatar-mouth teal"></div>
-                    </div>
-                  </div>
-                  <div class="avatar-option avatar-red">
-                    <div class="avatar-face red">
-                      <div class="avatar-dot red left"></div>
-                      <div class="avatar-dot red right"></div>
-                      <div class="avatar-mouth red"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      </div>
 
-            <div class="settings-row">
-              <div>
-                <div class="settings-label">Theme</div>
-                <div class="settings-description">Choose light or dark mode</div>
-              </div>
-              <div class="settings-control">
-                <select class="settings-select" id="theme-select">
+      <!-- Theme Selection -->
+      <div class="settings-row">
+        <label class="settings-label">Theme</label>
+        <p class="settings-description">Choose light or dark mode</p>
+        
+        <div class="select-wrapper">
+          <select class="select-control" id="theme-select">
                   <option value="dark">Dark Mode</option>
                   <option value="light">Light Mode</option>
                   <option value="system">System Default</option>
@@ -935,218 +720,186 @@
               </div>
             </div>
 
+      <!-- Chat Bubble Style -->
             <div class="settings-row">
-              <div>
-                <div class="settings-label">Accent Color</div>
-                <div class="settings-description">Choose your preferred accent color</div>
-              </div>
-              <div class="settings-control">
-                <div class="color-options">
-                  <div class="color-option color-blue selected"></div>
-                  <div class="color-option color-purple"></div>
-                  <div class="color-option color-pink"></div>
-                  <div class="color-option color-teal"></div>
-                  <div class="color-option color-green"></div>
-                  <div class="color-option color-orange"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="settings-row">
-              <div>
-                <div class="settings-label">Chat Bubble Style</div>
-                <div class="settings-description">Choose your preferred message bubble style</div>
-              </div>
-              <div class="settings-control">
-                <select class="settings-select">
+        <label class="settings-label">Chat Bubble Style</label>
+        <p class="settings-description">Choose your preferred message bubble style</p>
+        
+        <div class="select-wrapper">
+          <select class="select-control" id="bubble-style-select">
                   <option value="modern">Modern (Default)</option>
                   <option value="classic">Classic</option>
-                  <option value="compact">Compact</option>
                   <option value="minimal">Minimal</option>
                 </select>
               </div>
             </div>
-
-            <div class="settings-row">
-              <div>
-                <div class="settings-label">Font Size</div>
-                <div class="settings-description">Adjust the text size</div>
-              </div>
-              <div class="settings-control">
-                <div class="range-container">
-                  <input type="range" min="12" max="20" value="16" class="range-slider" id="font-size-slider">
-                  <div class="range-value">16px</div>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <!-- Privacy Section -->
-          <div class="settings-section">
-            <div class="settings-header">
-              <div class="settings-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
-                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
-                  <path d="M12 3v18"></path>
-                  <path d="M3 12h18"></path>
-                </svg>
+    <!-- Privacy & Security Section -->
+    <div class="settings-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <i data-lucide="shield"></i>
               </div>
-              <div class="settings-title">Privacy & Security</div>
+        <h2 class="section-title">Privacy & Security</h2>
             </div>
 
+      <!-- Online Status -->
             <div class="settings-row">
-              <div>
-                <div class="settings-label">Online Status</div>
-                <div class="settings-description">Show when you're active in the chat</div>
-              </div>
-              <div class="settings-control">
-                <select class="settings-select">
+        <label class="settings-label">Online Status</label>
+        <p class="settings-description">Show when you're active in the chat</p>
+        
+        <div class="select-wrapper">
+          <select class="select-control" id="online-status-select">
                   <option value="online">Online</option>
-                  <option value="away">Away</option>
                   <option value="invisible">Invisible</option>
+            <option value="away">Away</option>
                 </select>
               </div>
             </div>
 
+      <!-- Direct Message Privacy -->
             <div class="settings-row">
-              <div>
-                <div class="settings-label">Direct Message Privacy</div>
-                <div class="settings-description">Control who can send you direct messages</div>
-              </div>
-              <div class="settings-control">
-                <select class="settings-select">
+        <label class="settings-label">Direct Message Privacy</label>
+        <p class="settings-description">Control who can send you direct messages</p>
+        
+        <div class="select-wrapper">
+          <select class="select-control" id="dm-privacy-select">
                   <option value="everyone">Everyone</option>
-                  <option value="classmates">Classmates Only</option>
+            <option value="friends">Friends Only</option>
                   <option value="nobody">Nobody</option>
                 </select>
               </div>
             </div>
 
+      <!-- Read Receipts -->
             <div class="settings-row">
+        <div class="toggle-row">
               <div>
-                <div class="settings-label">Read Receipts</div>
-                <div class="settings-description">Let others know when you've read their messages</div>
+            <label class="settings-label">Read Receipts</label>
+            <p class="settings-description">Let others know when you've read their messages</p>
               </div>
-              <div class="settings-control">
-                <label class="switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
+          <label class="toggle">
+            <input type="checkbox" id="read-receipts-toggle">
+            <span class="toggle-slider"></span>
                 </label>
               </div>
             </div>
 
+      <!-- Typing Indicators -->
             <div class="settings-row">
+        <div class="toggle-row">
               <div>
-                <div class="settings-label">Typing Indicators</div>
-                <div class="settings-description">Show when you're typing a message</div>
+            <label class="settings-label">Typing Indicators</label>
+            <p class="settings-description">Show when you're typing a message</p>
               </div>
-              <div class="settings-control">
-                <label class="switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
+          <label class="toggle">
+            <input type="checkbox" id="typing-indicators-toggle" checked>
+            <span class="toggle-slider"></span>
                 </label>
               </div>
             </div>
 
+      <!-- Message Retention -->
             <div class="settings-row">
-              <div>
-                <div class="settings-label">Message Retention</div>
-                <div class="settings-description">How long to keep your chat history</div>
-              </div>
-              <div class="settings-control">
-                <select class="settings-select">
+        <label class="settings-label">Message Retention</label>
+        <p class="settings-description">How long to keep your chat history</p>
+        
+        <div class="select-wrapper">
+          <select class="select-control" id="message-retention-select">
                   <option value="forever">Forever</option>
-                  <option value="1month">1 Month</option>
-                  <option value="1week">1 Week</option>
-                  <option value="24hours">24 Hours</option>
+            <option value="1-year">1 Year</option>
+            <option value="6-months">6 Months</option>
+            <option value="30-days">30 Days</option>
+            <option value="7-days">7 Days</option>
                 </select>
               </div>
             </div>
 
+      <!-- Clear Chat History -->
             <div class="settings-row">
+        <div class="multi-row">
               <div>
-                <div class="settings-label">Clear Chat History</div>
-                <div class="settings-description">Delete all your messages and chat history</div>
+            <label class="settings-label">Clear Chat History</label>
+            <p class="settings-description">Delete all your messages and chat history</p>
               </div>
-              <div class="settings-control">
-                <button class="button button-danger">Clear History</button>
+          <button class="button button-danger" id="clear-history-button">Clear History</button>
               </div>
             </div>
           </div>
 
           <!-- Notifications Section -->
-          <div class="settings-section">
-            <div class="settings-header">
-              <div class="settings-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
-                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-                </svg>
+    <div class="settings-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <i data-lucide="bell"></i>
               </div>
-              <div class="settings-title">Notifications</div>
+        <h2 class="section-title">Notifications</h2>
             </div>
 
+      <!-- Enable Notifications -->
             <div class="settings-row">
+        <div class="toggle-row">
               <div>
-                <div class="settings-label">Enable Notifications</div>
-                <div class="settings-description">Receive alerts for new messages and mentions</div>
+            <label class="settings-label">Enable Notifications</label>
+            <p class="settings-description">Receive alerts for new messages and mentions</p>
               </div>
-              <div class="settings-control">
-                <label class="switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
+          <label class="toggle">
+            <input type="checkbox" id="notifications-toggle" checked>
+            <span class="toggle-slider"></span>
                 </label>
               </div>
             </div>
 
+      <!-- Sound Alerts -->
             <div class="settings-row">
+        <div class="toggle-row">
               <div>
-                <div class="settings-label">Sound Alerts</div>
-                <div class="settings-description">Play sounds for new messages</div>
+            <label class="settings-label">Sound Alerts</label>
+            <p class="settings-description">Play sounds for new messages</p>
               </div>
-              <div class="settings-control">
-                <label class="switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
+          <label class="toggle">
+            <input type="checkbox" id="sound-alerts-toggle" checked>
+            <span class="toggle-slider"></span>
                 </label>
               </div>
             </div>
 
+      <!-- General Channel Notifications -->
             <div class="settings-row">
-              <div>
-                <div class="settings-label">General Channel Notifications</div>
-                <div class="settings-description">How to be notified about General channel</div>
-              </div>
-              <div class="settings-control">
-                <select class="settings-select">
+        <label class="settings-label">General Channel Notifications</label>
+        <p class="settings-description">How to be notified about General channel</p>
+        
+        <div class="select-wrapper">
+          <select class="select-control" id="general-notifications-select">
                   <option value="all">All Messages</option>
-                  <option value="mentions">Only Mentions</option>
+            <option value="mentions">Mentions Only</option>
                   <option value="none">None</option>
                 </select>
               </div>
             </div>
 
+      <!-- Social Feed Notifications -->
             <div class="settings-row">
-              <div>
-                <div class="settings-label">Social Feed Notifications</div>
-                <div class="settings-description">How to be notified about Social Feed</div>
-              </div>
-              <div class="settings-control">
-                <select class="settings-select">
+        <label class="settings-label">Social Feed Notifications</label>
+        <p class="settings-description">How to be notified about Social Feed</p>
+        
+        <div class="select-wrapper">
+          <select class="select-control" id="social-notifications-select">
                   <option value="all">All Messages</option>
-                  <option value="mentions">Only Mentions</option>
+            <option value="mentions">Mentions Only</option>
                   <option value="none">None</option>
                 </select>
               </div>
             </div>
 
+      <!-- Direct Message Notifications -->
             <div class="settings-row">
-              <div>
-                <div class="settings-label">Direct Message Notifications</div>
-                <div class="settings-description">How to be notified about DMs</div>
-              </div>
-              <div class="settings-control">
-                <select class="settings-select">
+        <label class="settings-label">Direct Message Notifications</label>
+        <p class="settings-description">How to be notified about DMs</p>
+        
+        <div class="select-wrapper">
+          <select class="select-control" id="dm-notifications-select">
                   <option value="all">All Messages</option>
                   <option value="none">None</option>
                 </select>
@@ -1155,157 +908,536 @@
           </div>
 
           <!-- Account Section -->
-          <div class="settings-section">
-            <div class="settings-header">
-              <div class="settings-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-200">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+    <div class="settings-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <i data-lucide="user"></i>
               </div>
-              <div class="settings-title">Account</div>
+        <h2 class="section-title">Account</h2>
             </div>
 
+      <!-- Change Password -->
             <div class="settings-row">
+        <div class="multi-row">
               <div>
-                <div class="settings-label">Change Password</div>
-                <div class="settings-description">Update your login credentials</div>
+            <label class="settings-label">Change Password</label>
+            <p class="settings-description">Update your login credentials</p>
               </div>
-              <div class="settings-control">
-                <button class="button button-secondary">Change Password</button>
+          <button class="button button-secondary" id="change-password-button">Change Password</button>
               </div>
             </div>
 
+      <!-- Two-Factor Authentication -->
             <div class="settings-row">
+        <div class="toggle-row">
               <div>
-                <div class="settings-label">Two-Factor Authentication</div>
-                <div class="settings-description">Add an extra layer of security</div>
+            <label class="settings-label">Two-Factor Authentication</label>
+            <p class="settings-description">Add an extra layer of security</p>
               </div>
-              <div class="settings-control">
-                <label class="switch">
-                  <input type="checkbox">
-                  <span class="slider"></span>
+          <label class="toggle">
+            <input type="checkbox" id="two-factor-toggle">
+            <span class="toggle-slider"></span>
                 </label>
               </div>
             </div>
 
+      <!-- Active Sessions -->
             <div class="settings-row">
+        <div class="multi-row">
               <div>
-                <div class="settings-label">Active Sessions</div>
-                <div class="settings-description">Manage devices where you're logged in</div>
+            <label class="settings-label">Active Sessions</label>
+            <p class="settings-description">Manage devices where you're logged in</p>
               </div>
-              <div class="settings-control">
-                <button class="button button-secondary">View Sessions</button>
+          <button class="button button-secondary" id="view-sessions-button">View Sessions</button>
               </div>
             </div>
 
+      <!-- Reset Identity -->
             <div class="settings-row">
+        <div class="multi-row">
               <div>
-                <div class="settings-label">Reset Identity</div>
-                <div class="settings-description" style="color: var(--red-500);">Generate a new anonymous identity (cannot be undone)</div>
+            <label class="settings-label">Reset Identity</label>
+            <p class="settings-description">Generate a new anonymous identity (cannot be undone)</p>
               </div>
-              <div class="settings-control">
-                <button class="button button-danger">Reset Identity</button>
+          <button class="button button-secondary" id="reset-identity-button">Reset Identity</button>
               </div>
             </div>
 
+      <!-- Delete Account -->
             <div class="settings-row">
+        <div class="multi-row">
               <div>
-                <div class="settings-label">Delete Account</div>
-                <div class="settings-description" style="color: var(--red-500);">Permanently delete your account and all data</div>
+            <label class="settings-label">Delete Account</label>
+            <p class="settings-description">Permanently delete your account and all data</p>
               </div>
-              <div class="settings-control">
-                <button class="button button-danger">Delete Account</button>
+          <button class="button button-danger" id="delete-account-button">Delete Account</button>
               </div>
             </div>
           </div>
 
-          <!-- Save Buttons -->
-          <div class="settings-buttons">
-            <button class="button button-secondary">Cancel</button>
-            <button class="button button-primary">Save Changes</button>
+    <!-- Action buttons at bottom of page -->
+    <div class="action-buttons">
+      <button class="button button-secondary" id="cancel-button">Cancel</button>
+      <button class="button button-primary" id="save-button">Save Changes</button>
           </div>
         </div>
+
+  <!-- Change Password Modal -->
+  <div class="modal-overlay" id="password-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Change Password</h3>
+        <button class="modal-close" id="password-modal-close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-row">
+          <label class="settings-label">Current Password</label>
+          <input type="password" class="avatar-search-input" id="current-password">
+    </div>
+        <div class="settings-row">
+          <label class="settings-label">New Password</label>
+          <input type="password" class="avatar-search-input" id="new-password">
+        </div>
+        <div class="settings-row">
+          <label class="settings-label">Confirm New Password</label>
+          <input type="password" class="avatar-search-input" id="confirm-password">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="button button-secondary" id="password-cancel">Cancel</button>
+        <button class="button button-primary" id="password-save">Update Password</button>
       </div>
     </div>
   </div>
 
+  <!-- Active Sessions Modal -->
+  <div class="modal-overlay" id="sessions-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Active Sessions</h3>
+        <button class="modal-close" id="sessions-modal-close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-row">
+          <div class="multi-row">
+            <div>
+              <label class="settings-label">Current Device</label>
+              <p class="settings-description">Windows 11 • Chrome • San Francisco, CA</p>
+            </div>
+            <div class="badge" style="background-color: var(--accent-green); color: white;">Current</div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="multi-row">
+            <div>
+              <label class="settings-label">iPhone 14 Pro</label>
+              <p class="settings-description">iOS 17 • Safari • San Francisco, CA</p>
+              <p class="settings-description" style="color: var(--text-muted);">Last active: Today at 10:45 AM</p>
+            </div>
+            <button class="button button-danger">Log Out</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="multi-row">
+            <div>
+              <label class="settings-label">MacBook Pro</label>
+              <p class="settings-description">macOS 14 • Safari • Berkeley, CA</p>
+              <p class="settings-description" style="color: var(--text-muted);">Last active: Yesterday at 5:30 PM</p>
+            </div>
+            <button class="button button-danger">Log Out</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="button button-secondary" id="sessions-close">Close</button>
+        <button class="button button-danger" id="logout-all">Log Out All Devices</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="settings-toast" id="settings-toast">
+    <div class="toast-icon">
+      <i data-lucide="check-circle"></i>
+    </div>
+    <span id="toast-message">Settings saved successfully!</span>
+  </div>
+
   <script>
-    // Toggle dark/light mode
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-    const darkModeButton = document.getElementById('dark-mode-button');
-    const sunIcon = document.getElementById('sun-icon');
-    const moonIcon = document.getElementById('moon-icon');
-    const themeSelect = document.getElementById('theme-select');
+    // Replace the JavaScript portion of your code with this fixed version
 
-    darkModeButton.addEventListener('click', () => {
-      darkModeToggle.checked = !darkModeToggle.checked;
-      if (darkModeToggle.checked) {
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-        themeSelect.value = 'light';
-      } else {
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-        themeSelect.value = 'dark';
-      }
-    });
-
-    themeSelect.addEventListener('change', () => {
-      if (themeSelect.value === 'light') {
-        darkModeToggle.checked = true;
-        document.body.classList.add('light-mode');
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-      } else if (themeSelect.value === 'dark') {
-        darkModeToggle.checked = false;
-        document.body.classList.remove('light-mode');
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-      }
-      // System option would need additional logic to detect system preference
-    });
-
-    // Font size slider
-    const fontSizeSlider = document.getElementById('font-size-slider');
-    const fontSizeValue = document.querySelector('.range-value');
-
-    fontSizeSlider.addEventListener('input', () => {
-      const size = fontSizeSlider.value;
-      fontSizeValue.textContent = `${size}px`;
-      document.documentElement.style.setProperty('--base-font-size', `${size}px`);
-    });
-
-    // Avatar selection
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Settings variables
+    let selectedAvatar = localStorage.getItem('selectedAvatar') || 'avatar-1';
+    let selectedColor = localStorage.getItem('selectedColor') || 'blue';
+    let selectedTheme = localStorage.getItem('theme') || 'dark';
+    
+    console.log('Initial settings:', { selectedAvatar, selectedColor, selectedTheme });
+    
+    // DOM Elements
+    const body = document.getElementById('body');
     const avatarOptions = document.querySelectorAll('.avatar-option');
+    const colorOptions = document.querySelectorAll('.color-option');
+    const themeSelect = document.getElementById('theme-select');
+    const saveButton = document.getElementById('save-button');
+    const cancelButton = document.getElementById('cancel-button');
+    const backButton = document.getElementById('back-to-chat');
+    const avatarSearch = document.getElementById('avatar-search');
+    const avatarCategories = document.querySelectorAll('.avatar-category');
+    const avatarPages = document.querySelectorAll('.avatar-page');
+    const avatarGrid = document.getElementById('avatar-grid');
+    const changePasswordButton = document.getElementById('change-password-button');
+    const viewSessionsButton = document.getElementById('view-sessions-button');
+    const clearHistoryButton = document.getElementById('clear-history-button');
+    const resetIdentityButton = document.getElementById('reset-identity-button');
+    const deleteAccountButton = document.getElementById('delete-account-button');
+    const settingsToast = document.getElementById('settings-toast');
+    const toastMessage = document.getElementById('toast-message');
+    
+    // Modal elements
+    const passwordModal = document.getElementById('password-modal');
+    const passwordModalClose = document.getElementById('password-modal-close');
+    const passwordCancel = document.getElementById('password-cancel');
+    const passwordSave = document.getElementById('password-save');
+    const sessionsModal = document.getElementById('sessions-modal');
+    const sessionsModalClose = document.getElementById('sessions-modal-close');
+    const sessionsClose = document.getElementById('sessions-close');
+    const logoutAllButton = document.getElementById('logout-all');
+    
+    // FIX 1: Ensure all avatar options are visible initially and have proper display property
+    avatarOptions.forEach(option => {
+      option.style.display = 'block';
+    });
+    
+    // Set initial theme and avatar selection
+    themeSelect.value = selectedTheme;
+    if (selectedTheme === 'light') {
+      body.classList.add('light-mode');
+    }
+    
+    // Initialize avatar selection
+    updateAvatarSelection();
+    updateColorSelection();
+    
+    // FIX 2: Handle avatar selection - completely rewritten event handler
+    avatarOptions.forEach(option => {
+      option.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Avatar clicked:', this.getAttribute('data-avatar'));
+        
+        selectedAvatar = this.getAttribute('data-avatar');
+        updateAvatarSelection();
+        showToast(`Avatar ${selectedAvatar} selected`);
+      };
+    });
+    
+    // FIX 3: Handle color selection - simplified and more robust
+    colorOptions.forEach(option => {
+      option.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        selectedColor = this.getAttribute('data-color');
+        updateColorSelection();
+        showToast(`Color ${selectedColor} selected`);
+      };
+    });
+    
+    // Handle theme selection
+    themeSelect.addEventListener('change', function() {
+      selectedTheme = this.value;
+      if (selectedTheme === 'light') {
+        body.classList.add('light-mode');
+      } else {
+        body.classList.remove('light-mode');
+      }
+    });
+    
+    // FIX 4: Improve avatar selection update function
+    function updateAvatarSelection() {
+      console.log('Updating avatar selection to:', selectedAvatar);
+      
+      // First remove selected class from all options
+      avatarOptions.forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      // Then find and add selected class to the chosen avatar
+      const selectedOption = document.querySelector(`.avatar-option[data-avatar="${selectedAvatar}"]`);
+      if (selectedOption) {
+        selectedOption.classList.add('selected');
+      } else {
+        console.warn(`Avatar with data-avatar="${selectedAvatar}" not found`);
+      }
+    }
+    
+    // Update UI for color selection
+    function updateColorSelection() {
+      // First remove selected class from all options
+      colorOptions.forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      // Then find and add selected class to the chosen color
+      const selectedOption = document.querySelector(`.color-option[data-color="${selectedColor}"]`);
+      if (selectedOption) {
+        selectedOption.classList.add('selected');
+      } else {
+        console.warn(`Color with data-color="${selectedColor}" not found`);
+      }
+    }
+    
+    // FIX 5: Improved avatar search with better display property handling
+    avatarSearch.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const selectedCategory = document.querySelector('.avatar-category.active').getAttribute('data-category');
+      let visibleAvatars = 0;
+      
+      avatarOptions.forEach(option => {
+        const category = option.getAttribute('data-category');
+        const avatar = option.getAttribute('data-avatar');
+        
+        // Only search within the currently selected category
+        const categoryMatch = selectedCategory === 'all' || category === selectedCategory;
+        const searchMatch = !searchTerm || 
+                            avatar.toLowerCase().includes(searchTerm) || 
+                            category.toLowerCase().includes(searchTerm);
+        
+        if (categoryMatch && searchMatch) {
+          option.style.display = 'block';
+          visibleAvatars++;
+        } else {
+          option.style.display = 'none';
+        }
+      });
+      
+      if (visibleAvatars === 0 && searchTerm) {
+        showToast(`No avatars found matching "${searchTerm}"`);
+      }
+    });
+    
+    // FIX 6: Improved category filtering
+    avatarCategories.forEach(category => {
+      category.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Update active class
+        avatarCategories.forEach(cat => cat.classList.remove('active'));
+        this.classList.add('active');
+        
+        const selectedCategory = this.getAttribute('data-category');
+        console.log('Selected category:', selectedCategory);
+        
+        // Clear search field when changing categories
+        avatarSearch.value = '';
+        
+        // Filter avatars
+        let visibleAvatars = 0;
 
     avatarOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        // Remove selected class from all options
-        avatarOptions.forEach(opt => opt.classList.remove('selected'));
-        // Add selected class to clicked option
-        option.classList.add('selected');
+          const avatarCategory = option.getAttribute('data-category');
+          
+          if (selectedCategory === 'all' || avatarCategory === selectedCategory) {
+            option.style.display = 'block';
+            visibleAvatars++;
+          } else {
+            option.style.display = 'none';
+          }
+        });
+        
+        // Select first page when changing categories
+        avatarPages.forEach(p => p.classList.remove('active'));
+        document.querySelector('.avatar-page:first-child').classList.add('active');
+        
+        if (visibleAvatars === 0) {
+          showToast(`No avatars found in the ${selectedCategory} category`);
+        }
       });
     });
 
-    // Color theme selection
-    const colorOptions = document.querySelectorAll('.color-option');
-
-    colorOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        // Remove selected class from all options
-        colorOptions.forEach(opt => opt.classList.remove('selected'));
-        // Add selected class to clicked option
-        option.classList.add('selected');
+    // Handle avatar pagination
+    avatarPages.forEach(page => {
+      page.addEventListener('click', function() {
+        // Update active class
+        avatarPages.forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        
+        // In a real app, this would load new avatars
+        // For now, we'll just scroll to top of grid
+        avatarGrid.scrollIntoView({ behavior: 'smooth' });
       });
     });
 
-    // Back button
-    const backButton = document.getElementById('back-button');
-    backButton.addEventListener('click', () => {
+    // Change Password Modal
+    changePasswordButton.addEventListener('click', function() {
+      passwordModal.classList.add('active');
+    });
+    
+    passwordModalClose.addEventListener('click', function() {
+      passwordModal.classList.remove('active');
+    });
+    
+    passwordCancel.addEventListener('click', function() {
+      passwordModal.classList.remove('active');
+    });
+    
+    passwordSave.addEventListener('click', function() {
+      // Validation would happen here in real app
+      passwordModal.classList.remove('active');
+      showToast('Password updated successfully!');
+    });
+    
+    // Sessions Modal
+    viewSessionsButton.addEventListener('click', function() {
+      sessionsModal.classList.add('active');
+    });
+    
+    sessionsModalClose.addEventListener('click', function() {
+      sessionsModal.classList.remove('active');
+    });
+    
+    sessionsClose.addEventListener('click', function() {
+      sessionsModal.classList.remove('active');
+    });
+    
+    logoutAllButton.addEventListener('click', function() {
+      // Logout logic would happen here
+      sessionsModal.classList.remove('active');
+      showToast('Logged out of all other devices');
+    });
+    
+    // Confirmation dialogs for danger actions
+    clearHistoryButton.addEventListener('click', function() {
+      if (confirm('Are you sure you want to clear your chat history? This action cannot be undone.')) {
+        showToast('Chat history cleared successfully');
+      }
+    });
+    
+    resetIdentityButton.addEventListener('click', function() {
+      if (confirm('Are you sure you want to reset your identity? This will create a new anonymous profile and cannot be undone.')) {
+        showToast('Identity reset successfully');
+      }
+    });
+    
+    deleteAccountButton.addEventListener('click', function() {
+      if (confirm('Are you sure you want to delete your account? All your data will be permanently removed.')) {
+        showToast('Account scheduled for deletion');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+      }
+    });
+    
+    // Save button click handler
+    saveButton.addEventListener('click', function() {
+      // Extract the DiceBear avatar style from the selected avatar's image URL
+      const selectedAvatarOption = document.querySelector('.avatar-option.selected');
+      let diceBearStyle = 'bottts'; // Default style
+      let diceBearSeed = 'Felix'; // Default seed
+      
+      if (selectedAvatarOption) {
+        const imgElement = selectedAvatarOption.querySelector('img');
+        if (imgElement && imgElement.src) {
+          // Parse the DiceBear URL to extract style and seed
+          // Example URL: https://api.dicebear.com/7.x/bottts/svg?seed=Felix
+          const url = new URL(imgElement.src);
+          const pathParts = url.pathname.split('/');
+          if (pathParts.length >= 4) {
+            diceBearStyle = pathParts[3]; // This will be "bottts", "lorelei", etc.
+          }
+          const seedParam = url.searchParams.get('seed');
+          if (seedParam) {
+            diceBearSeed = seedParam;
+          }
+        }
+      }
+      
+      // Save settings to localStorage
+      localStorage.setItem('selectedAvatar', selectedAvatar);
+      localStorage.setItem('selectedColor', selectedColor);
+      localStorage.setItem('theme', selectedTheme);
+      localStorage.setItem('selectedGravatar', diceBearStyle); // Store DiceBear style as Gravatar style
+      localStorage.setItem('selectedSeed', diceBearSeed); // Store the seed value
+      
+      console.log('Saved settings:', {
+        avatar: selectedAvatar,
+        color: selectedColor,
+        theme: selectedTheme,
+        gravatarStyle: diceBearStyle,
+        seed: diceBearSeed
+      });
+      
+      // Show success message
+      showToast('Settings saved successfully!');
+      
+      // Redirect after short delay
+      setTimeout(() => {
       window.location.href = '/chat';
+      }, 1500);
+    });
+    
+    // Cancel button handler
+    cancelButton.addEventListener('click', function() {
+      window.location.href = '/chat';
+    });
+    
+    // Back to chat button handler
+    backButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Back to chat button clicked');
+      
+      // Show a toast to inform the user
+      showToast('Returning to chat...');
+      
+      // Redirect to chat page after a short delay
+      setTimeout(() => {
+        try {
+          window.location.href = '/chat';
+        } catch (error) {
+          console.error('Navigation error:', error);
+          // Alternative approach if the above fails
+          window.location.replace('/chat');
+        }
+      }, 300);
+    });
+    
+    // Function to show toast notification
+    function showToast(message) {
+      toastMessage.textContent = message;
+      settingsToast.classList.add('show');
+      
+      setTimeout(() => {
+        settingsToast.classList.remove('show');
+      }, 3000);
+    }
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', function(event) {
+      if (event.target === passwordModal) {
+        passwordModal.classList.remove('active');
+      }
+      if (event.target === sessionsModal) {
+        sessionsModal.classList.remove('active');
+      }
+    });
+    
+    // FIX 7: Add a debug console log to check if everything loaded
+    console.log('Settings page initialized successfully!');
+    
+  } catch (error) {
+    console.error('Error initializing settings page:', error);
+  }
     });
   </script>
 </body>
